@@ -41,8 +41,8 @@ https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backl
    ```
 
 ## Notas Adicionales
-- Asegúrate de que el backend esté corriendo antes de iniciar el frontend.
-- - Asegúrate de que el backend esté corriendo en `http://localhost:5173`.
+- Asegúrese de que el backend esté corriendo antes de iniciar el frontend.
+- Asegúrese de que el backend esté corriendo en `http://localhost:5173`.
 - Para detalles sobre las rutas y la API, consulta la documentación en el repositorio del backend.
 
 
