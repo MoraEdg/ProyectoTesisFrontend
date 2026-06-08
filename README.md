@@ -1,7 +1,7 @@
 # Edgar Mora
 
 
-## Enlace al repositorio en GitHub del FrontEnd
+## Enlace al repositorio en GitHub del BackEnd
 https://github.com/MoraEdg/ProyectoTesisBackend.git
 
 ## Enlace al proyecto de Jira
@@ -26,7 +26,7 @@ https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backl
 
 1. **Clonar el repositorio del frontend**:
    ```
-   git clone https://github.com/MoraEdg/ProyectoTesisBackend.git
+   git clone https://github.com/MoraEdg/ProyectoTesisFrontend.git
    cd ProyectoTesisFrontend
    ```
 
