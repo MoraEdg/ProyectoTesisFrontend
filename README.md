@@ -1,49 +1,157 @@
-# Edgar Mora
+# Frontend — Sistema de Gestión de Prácticas Preprofesionales UISEK
 
+**Autor:** Edgar Mora  
+**Proyecto de Tesis — Universidad SEK**
 
-## Enlace al repositorio en GitHub del BackEnd
-https://github.com/MoraEdg/ProyectoTesisBackend.git
+| Recurso | Enlace |
+|---|---|
+| Repositorio Frontend | https://github.com/MoraEdg/ProyectoTesisFrontend.git |
+| Repositorio Backend | https://github.com/MoraEdg/ProyectoTesisBackend.git |
+| Tablero Jira | https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog |
 
-## Enlace al proyecto de Jira
-https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog?atlOrigin=eyJpIjoiMTAxYjdkODNhZWNhNDA2YzhkYTc4MmM1YzJmMGI2MjQiLCJwIjoiaiJ9
+---
 
-# Frontend - Sistema de Gestión de Prácticas Preprofesionales
-#Proyecto de Tesis 
-#
+## Stack tecnológico
 
-## 🧩 Arquitectura del Sistema
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React | 19.x | Librería UI |
+| Vite | 7.x | Bundler y servidor de desarrollo |
+| TypeScript | 5.8 | Tipado estático |
+| Tailwind CSS | 3.x | Estilos utilitarios |
+| react-router-dom | 6.x | Enrutamiento SPA |
+| axios | 1.7.x | Cliente HTTP |
+| react-hook-form | 7.x | Gestión de formularios |
 
-| **Capa**       | **Tecnologías**               | **Responsabilidades**                          |
-|----------------|-------------------------------|-----------------------------------------------|
-| **Frontend**   | ReactJS, Vite, Axios          | Interfaz de usuario, gestión de estado        |
-| **Backend**    | Node.js, Express, JWT         | API REST, autenticación, lógica de negocio    |
-| **Database**   | PostgreSQL, Prisma ORM        | Almacenamiento persistente, gestión de datos  |
+---
 
+## Estructura del proyecto
 
+```
+src/
+├── api/
+│   └── axiosConfig.ts      — Instancia de Axios con interceptores JWT y manejo de 401
+├── components/
+│   └── PrivateRoute.tsx    — Protección de rutas por autenticación y rol
+├── context/
+│   └── AuthContext.tsx     — Contexto de autenticación global (AuthProvider, useAuth)
+├── pages/
+│   ├── Login.tsx           — Formulario de inicio de sesión
+│   ├── Dashboard.tsx       — Vista principal del Coordinador (Sprint 2)
+│   └── MisTramites.tsx     — Vista de trámites del Estudiante (Sprint 4)
+└── utils/
+    └── roles.ts            — Constantes de roles del sistema
+```
 
+---
 
-## Instrucciones para Levantar el Frontend
+## Requisitos previos
 
-1. **Clonar el repositorio del frontend**:
-   ```
-   git clone https://github.com/MoraEdg/ProyectoTesisFrontend.git
-   cd ProyectoTesisFrontend
-   ```
+- Node.js 20+
+- El [backend](https://github.com/MoraEdg/ProyectoTesisBackend) debe estar corriendo en `http://localhost:5000`
 
-2. **Instalar dependencias**:
-   ```bash
-   npm install
-   ```
+---
 
-3. **Levantar la aplicación**:
-   ```bash
-   npm start
-   ```
+## Configuración inicial
 
-## Notas Adicionales
-- Asegúrese de que el backend esté corriendo antes de iniciar el frontend.
-- Asegúrese de que el backend esté corriendo en `http://localhost:5173`.
-- Para detalles sobre las rutas y la API, consulta la documentación en el repositorio del backend.
+### 1. Clonar e instalar dependencias
 
+```bash
+git clone https://github.com/MoraEdg/ProyectoTesisFrontend.git
+cd ProyectoTesisFrontend
+npm install
+```
 
-# ProyectoTesisFrontend
+### 2. Configurar variables de entorno
+
+El archivo `.env` ya incluye la configuración por defecto:
+
+```env
+VITE_API_URL=http://localhost:5000/api/v1
+```
+
+Para apuntar a otro entorno, crear `.env.local` y sobreescribir la variable.
+
+### 3. Levantar en desarrollo
+
+```bash
+npm run dev
+```
+
+La aplicación queda disponible en `http://localhost:5173`.
+
+### 4. Build de producción
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## Autenticación
+
+El sistema usa **JWT Bearer token** almacenado en `localStorage`.
+
+- El token se añade automáticamente a cada request HTTP via interceptor de Axios.
+- Si el servidor responde con `401`, el token se elimina y se redirige a `/login`.
+- La sesión se restaura automáticamente al recargar la página desde `localStorage`.
+
+**Credenciales de prueba:**
+
+| Campo | Valor |
+|---|---|
+| Usuario | `admin` |
+| Contraseña | `Admin1234` |
+| Rol | `Coordinador` |
+| Ruta post-login | `/dashboard` |
+
+---
+
+## Roles y rutas protegidas
+
+| Rol | Ruta inicial | Acceso |
+|---|---|---|
+| `Estudiante` | `/mis-tramites` | Solo sus trámites |
+| `Coordinador` | `/dashboard` | Gestión completa |
+| `Director` | `/tramites` | Revisión de trámites |
+| `Decano` | `/tramites` | Aprobación final |
+
+Las rutas están protegidas por `PrivateRoute` que verifica autenticación y rol antes de renderizar.
+
+---
+
+## Configuración TypeScript
+
+El proyecto usa una configuración estricta:
+
+| Opción | Valor | Implicación |
+|---|---|---|
+| `strict` | `true` | Tipado estricto completo |
+| `verbatimModuleSyntax` | `true` | Importaciones de tipo deben usar `import type` |
+| `noUnusedLocals` | `true` | No se permiten variables sin uso |
+| `noUnusedParameters` | `true` | No se permiten parámetros sin uso |
+
+---
+
+## Scripts disponibles
+
+| Script | Descripción |
+|---|---|
+| `npm run dev` | Servidor de desarrollo en puerto 5173 |
+| `npm run build` | Build de producción |
+| `npm run preview` | Previsualización del build |
+| `npm run lint` | Análisis estático con ESLint |
+
+---
+
+## Estado del proyecto
+
+| Sprint | Módulo | Estado |
+|---|---|---|
+| Sprint 1 | Autenticación, rutas protegidas, Tailwind | Completado |
+| Sprint 2 | Gestión de Estudiantes | Pendiente |
+| Sprint 3 | Gestión de Trámites | Pendiente |
+| Sprint 4 | Hitos, Documentos y Observaciones | Pendiente |
+| Sprint 5 | Gestión de Convenios | Pendiente |
+| Sprint 6 | Generación de Documentos | Pendiente |

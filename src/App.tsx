@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import MisTramites from './pages/MisTramites';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function Tramites() {
+  return <div className="p-6"><h1 className="text-2xl font-bold">Trámites — Revisor</h1></div>;
 }
 
-export default App
+function SinPermisos() {
+  return (
+    <div className="p-6 text-center">
+      <h1 className="text-2xl font-bold text-red-600">Sin permisos</h1>
+      <p className="text-gray-500 mt-2">No tienes acceso a esta página.</p>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+
+          {/* Pública */}
+          <Route path="/login"        element={<Login />} />
+          <Route path="/sin-permisos" element={<SinPermisos />} />
+
+          {/* Coordinador */}
+          <Route path="/dashboard" element={
+            <PrivateRoute roles={['Coordinador']}>
+              <Dashboard />
+            </PrivateRoute>
+          } />
+
+          {/* Estudiante */}
+          <Route path="/mis-tramites" element={
+            <PrivateRoute roles={['Estudiante']}>
+              <MisTramites />
+            </PrivateRoute>
+          } />
+
+          {/* Revisores */}
+          <Route path="/tramites" element={
+            <PrivateRoute roles={['Coordinador', 'Director', 'Decano']}>
+              <Tramites />
+            </PrivateRoute>
+          } />
+
+          {/* Redirigir raíz a login */}
+          <Route path="/"  element={<Navigate to="/login" replace />} />
+          <Route path="*"  element={<Navigate to="/login" replace />} />
+
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
