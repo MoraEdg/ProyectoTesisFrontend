@@ -1,18 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import MisTramites from './pages/MisTramites';
-
-function Tramites() {
-  return <div className="p-6"><h1 className="text-2xl font-bold">Trámites — Revisor</h1></div>;
-}
+import ListaEstudiantes from './pages/estudiantes/ListaEstudiantes';
+import DetalleEstudiante from './pages/estudiantes/DetalleEstudiante';
+import FormEstudiante from './pages/estudiantes/FormEstudiante';
+import ImportarEstudiantes from './pages/estudiantes/ImportarEstudiantes';
 
 function SinPermisos() {
   return (
     <div className="p-6 text-center">
-      <h1 className="text-2xl font-bold text-red-600">Sin permisos</h1>
+      <h1 className="text-2xl font-bold text-red-600">No autorizado</h1>
       <p className="text-gray-500 mt-2">No tienes acceso a esta página.</p>
     </div>
   );
@@ -23,17 +24,25 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-
-          {/* Pública */}
-          <Route path="/login"        element={<Login />} />
+          {/* Públicas */}
+          <Route path="/login" element={<Login />} />
           <Route path="/sin-permisos" element={<SinPermisos />} />
 
-          {/* Coordinador */}
-          <Route path="/dashboard" element={
+          {/* Rutas autenticadas con Layout */}
+          <Route element={
             <PrivateRoute roles={['Coordinador']}>
-              <Dashboard />
+              <Layout />
             </PrivateRoute>
-          } />
+          }>
+            <Route path="/dashboard" element={<Dashboard />} />
+
+            {/* Módulo Estudiantes — Sprint 2 */}
+            <Route path="/estudiantes"              element={<ListaEstudiantes />} />
+            <Route path="/estudiantes/nuevo"        element={<FormEstudiante />} />
+            <Route path="/estudiantes/importar"     element={<ImportarEstudiantes />} />
+            <Route path="/estudiantes/:id"          element={<DetalleEstudiante />} />
+            <Route path="/estudiantes/:id/editar"   element={<FormEstudiante />} />
+          </Route>
 
           {/* Estudiante */}
           <Route path="/mis-tramites" element={
@@ -42,17 +51,9 @@ export default function App() {
             </PrivateRoute>
           } />
 
-          {/* Revisores */}
-          <Route path="/tramites" element={
-            <PrivateRoute roles={['Coordinador', 'Director', 'Decano']}>
-              <Tramites />
-            </PrivateRoute>
-          } />
-
-          {/* Redirigir raíz a login */}
-          <Route path="/"  element={<Navigate to="/login" replace />} />
-          <Route path="*"  element={<Navigate to="/login" replace />} />
-
+          {/* Redirecciones */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

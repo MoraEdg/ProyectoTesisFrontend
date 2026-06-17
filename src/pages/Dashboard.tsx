@@ -1,23 +1,34 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
-  const { usuario, logout } = useAuth();
+  const { usuario } = useAuth();
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard — Coordinador</h1>
-        <button
-          onClick={() => void logout()}
-          className="text-sm text-gray-500 hover:text-red-600 transition-colors"
-        >
-          Cerrar sesión
-        </button>
-      </div>
-      <p className="text-gray-600">
+    <div>
+      <h1 className="text-2xl font-bold text-gray-800 mb-2">
         Bienvenido, {usuario?.nombres} {usuario?.apellidos}
-      </p>
-      <p className="text-gray-400 text-sm mt-1">Sprint 2 — Gestión de Estudiantes (próximamente)</p>
+      </h1>
+      <p className="text-gray-500 text-sm mb-8">Panel de Coordinación</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link
+          to="/estudiantes"
+          className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
+        >
+          <div className="flex items-center gap-4 mb-3">
+            <div className="w-12 h-12 rounded-lg bg-uisek/10 flex items-center justify-center">
+              <i className="fa-solid fa-user-graduate text-uisek text-xl" />
+            </div>
+            <h2 className="text-lg font-medium text-gray-800 group-hover:text-uisek transition-colors">
+              Gestión de Estudiantes
+            </h2>
+          </div>
+          <p className="text-gray-500 text-sm">
+            Registrar, editar, desactivar e importar estudiantes.
+          </p>
+        </Link>
+      </div>
     </div>
   );
 }

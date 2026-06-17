@@ -30,17 +30,27 @@
 ```
 src/
 ├── api/
-│   └── axiosConfig.ts      — Instancia de Axios con interceptores JWT y manejo de 401
+│   ├── axiosConfig.ts          — Instancia de Axios con interceptores JWT y manejo de 401
+│   └── estudiantesApi.ts       — Funciones API del módulo de estudiantes
 ├── components/
-│   └── PrivateRoute.tsx    — Protección de rutas por autenticación y rol
+│   ├── PrivateRoute.tsx        — Protección de rutas por autenticación y rol
+│   ├── Layout.tsx              — Layout institucional (navbar + sidebar + área de contenido)
+│   └── ModalConfirmacion.tsx   — Modal reutilizable de confirmación
 ├── context/
-│   └── AuthContext.tsx     — Contexto de autenticación global (AuthProvider, useAuth)
+│   └── AuthContext.tsx         — Contexto de autenticación global (AuthProvider, useAuth)
 ├── pages/
-│   ├── Login.tsx           — Formulario de inicio de sesión
-│   ├── Dashboard.tsx       — Vista principal del Coordinador (Sprint 2)
-│   └── MisTramites.tsx     — Vista de trámites del Estudiante (Sprint 4)
+│   ├── Login.tsx               — Login con identidad visual institucional UISEK
+│   ├── Dashboard.tsx           — Panel de coordinación con accesos a módulos
+│   ├── MisTramites.tsx         — Vista de trámites del Estudiante (Sprint 4)
+│   └── estudiantes/
+│       ├── ListaEstudiantes.tsx      — Tabla de estudiantes con acciones
+│       ├── DetalleEstudiante.tsx     — Vista de solo lectura
+│       ├── FormEstudiante.tsx        — Formulario crear/editar (modo dual)
+│       └── ImportarEstudiantes.tsx   — Importación desde Excel con reporte
+├── types/
+│   └── estudiante.ts           — Interfaces TypeScript del módulo
 └── utils/
-    └── roles.ts            — Constantes de roles del sistema
+    └── roles.ts                — Constantes de roles del sistema
 ```
 
 ---
@@ -121,6 +131,29 @@ Las rutas están protegidas por `PrivateRoute` que verifica autenticación y rol
 
 ---
 
+## Módulo de Estudiantes (Sprint 2)
+
+Acceso exclusivo del rol **Coordinador**.
+
+| Ruta | Página | Descripción |
+|---|---|---|
+| `/estudiantes` | ListaEstudiantes | Tabla con acciones Ver, Editar, Desactivar |
+| `/estudiantes/nuevo` | FormEstudiante | Registro manual de un estudiante |
+| `/estudiantes/:id` | DetalleEstudiante | Vista de solo lectura |
+| `/estudiantes/:id/editar` | FormEstudiante | Edición (cédula no modificable) |
+| `/estudiantes/importar` | ImportarEstudiantes | Importación masiva desde Excel |
+
+### Identidad visual
+
+La interfaz replica la identidad institucional UISEK:
+- Navbar fijo con color primario `#085394`
+- Sidebar con sombra sutil y bordes redondeados
+- Encabezados de tabla en `#6366F1`
+- Fuente Roboto (Google Fonts)
+- Iconografía Font Awesome 6
+
+---
+
 ## Configuración TypeScript
 
 El proyecto usa una configuración estricta:
@@ -150,7 +183,7 @@ El proyecto usa una configuración estricta:
 | Sprint | Módulo | Estado |
 |---|---|---|
 | Sprint 1 | Autenticación, rutas protegidas, Tailwind | Completado |
-| Sprint 2 | Gestión de Estudiantes | Pendiente |
+| Sprint 2 | Gestión de Estudiantes (CRUD, importación, identidad UISEK) | Completado |
 | Sprint 3 | Gestión de Trámites | Pendiente |
 | Sprint 4 | Hitos, Documentos y Observaciones | Pendiente |
 | Sprint 5 | Gestión de Convenios | Pendiente |
