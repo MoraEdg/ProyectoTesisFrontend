@@ -1,10 +1,30 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const menuItems = [
+interface MenuItem {
+  to: string;
+  label: string;
+  icon: string;
+}
+
+const menuCoordinador: MenuItem[] = [
   { to: '/dashboard',    label: 'Inicio',       icon: 'fa-solid fa-house' },
   { to: '/estudiantes',  label: 'Estudiantes',  icon: 'fa-solid fa-user-graduate' },
+  { to: '/tramites',     label: 'Trámites',     icon: 'fa-solid fa-folder-open' },
 ];
+
+const menuEstudiante: MenuItem[] = [
+  { to: '/dashboard',      label: 'Inicio',       icon: 'fa-solid fa-house' },
+  { to: '/mis-tramites',   label: 'Mis Trámites', icon: 'fa-solid fa-folder-open' },
+];
+
+function getMenu(rol: string | undefined): MenuItem[] {
+  switch (rol) {
+    case 'Coordinador': return menuCoordinador;
+    case 'Estudiante':  return menuEstudiante;
+    default:            return [];
+  }
+}
 
 export default function Layout() {
   const { usuario, logout } = useAuth();
@@ -15,12 +35,14 @@ export default function Layout() {
     navigate('/login');
   };
 
+  const menuItems = getMenu(usuario?.rol);
+
   return (
     <div className="min-h-screen bg-uisek-light">
       {/* Navbar */}
       <header
         className="fixed top-0 left-0 w-full h-[70px] z-10 flex items-center justify-between px-8"
-        style={{ backgroundColor: '#085394' }}
+        style={{ backgroundColor: '#054690' }}
       >
         <div className="flex items-center gap-4">
           <img
