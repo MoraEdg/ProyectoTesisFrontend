@@ -31,24 +31,35 @@
 src/
 ├── api/
 │   ├── axiosConfig.ts          — Instancia de Axios con interceptores JWT y manejo de 401
-│   └── estudiantesApi.ts       — Funciones API del módulo de estudiantes
+│   ├── estudiantesApi.ts       — Funciones API del módulo de estudiantes
+│   ├── tramitesApi.ts          — Funciones API del módulo de trámites y catálogos
+│   └── hitosApi.ts             — Funciones API del módulo de hitos
 ├── components/
 │   ├── PrivateRoute.tsx        — Protección de rutas por autenticación y rol
-│   ├── Layout.tsx              — Layout institucional (navbar + sidebar + área de contenido)
-│   └── ModalConfirmacion.tsx   — Modal reutilizable de confirmación
+│   ├── Layout.tsx              — Layout institucional (navbar + sidebar dinámico por rol)
+│   ├── ModalConfirmacion.tsx   — Modal de confirmación (desactivar estudiantes)
+│   ├── ModalCambioEstado.tsx   — Modal de cambio de estado con comentario
+│   ├── TimelineHitos.tsx       — Lista visual de hitos con acciones por estado
+│   └── badgeEstado.ts          — Colores centralizados de estados (trámite + hito)
 ├── context/
 │   └── AuthContext.tsx         — Contexto de autenticación global (AuthProvider, useAuth)
 ├── pages/
 │   ├── Login.tsx               — Login con identidad visual institucional UISEK
-│   ├── Dashboard.tsx           — Panel de coordinación con accesos a módulos
-│   ├── MisTramites.tsx         — Vista de trámites del Estudiante (Sprint 4)
-│   └── estudiantes/
-│       ├── ListaEstudiantes.tsx      — Tabla de estudiantes con acciones
-│       ├── DetalleEstudiante.tsx     — Vista de solo lectura
-│       ├── FormEstudiante.tsx        — Formulario crear/editar (modo dual)
-│       └── ImportarEstudiantes.tsx   — Importación desde Excel con reporte
+│   ├── Dashboard.tsx           — Panel dinámico por rol con accesos a módulos
+│   ├── MisTramites.tsx         — Lista de trámites del Estudiante (solo lectura)
+│   ├── estudiantes/
+│   │   ├── ListaEstudiantes.tsx      — Tabla de estudiantes con acciones
+│   │   ├── DetalleEstudiante.tsx     — Vista de solo lectura
+│   │   ├── FormEstudiante.tsx        — Formulario crear/editar (modo dual)
+│   │   └── ImportarEstudiantes.tsx   — Importación desde Excel con reporte
+│   └── tramites/
+│       ├── ListaTramites.tsx         — Tabla de trámites (Coordinador)
+│       ├── FormTramite.tsx           — Crear trámite (estudiante + proceso + período)
+│       └── DetalleTramite.tsx        — Detalle + hitos + timeline historial + acciones
 ├── types/
-│   └── estudiante.ts           — Interfaces TypeScript del módulo
+│   ├── estudiante.ts           — Interfaces del módulo de estudiantes
+│   ├── tramite.ts              — Interfaces del módulo de trámites
+│   └── hito.ts                 — Interfaces del módulo de hitos
 └── utils/
     └── roles.ts                — Constantes de roles del sistema
 ```
@@ -143,11 +154,34 @@ Acceso exclusivo del rol **Coordinador**.
 | `/estudiantes/:id/editar` | FormEstudiante | Edición (cédula no modificable) |
 | `/estudiantes/importar` | ImportarEstudiantes | Importación masiva desde Excel |
 
+---
+
+## Módulo de Trámites (Sprint 3)
+
+**Coordinador:** gestión completa de trámites.
+**Estudiante:** consulta de sus propios trámites (solo lectura).
+
+| Ruta | Página | Roles |
+|---|---|---|
+| `/tramites` | ListaTramites | Coordinador |
+| `/tramites/nuevo` | FormTramite | Coordinador |
+| `/tramites/:id` | DetalleTramite | Coordinador, Estudiante |
+| `/mis-tramites` | MisTramites | Estudiante |
+| `/mis-tramites/:id` | DetalleTramite | Estudiante |
+
+**Funcionalidades:**
+- Crear trámite seleccionando estudiante, tipo de proceso y período
+- Cambiar estado con modal de comentario (Coordinador)
+- Finalizar trámite desde estado APROBADO
+- Timeline visual del historial de estados
+- Vista de solo lectura para el Estudiante
+- Layout unificado con sidebar dinámico por rol
+
 ### Identidad visual
 
 La interfaz replica la identidad institucional UISEK:
-- Navbar fijo con color primario `#085394`
-- Sidebar con sombra sutil y bordes redondeados
+- Navbar fijo con color primario `#054690`
+- Sidebar dinámico por rol, con sombra sutil y bordes redondeados
 - Encabezados de tabla en `#6366F1`
 - Fuente Roboto (Google Fonts)
 - Iconografía Font Awesome 6
@@ -184,7 +218,7 @@ El proyecto usa una configuración estricta:
 |---|---|---|
 | Sprint 1 | Autenticación, rutas protegidas, Tailwind | Completado |
 | Sprint 2 | Gestión de Estudiantes (CRUD, importación, identidad UISEK) | Completado |
-| Sprint 3 | Gestión de Trámites | Pendiente |
-| Sprint 4 | Hitos, Documentos y Observaciones | Pendiente |
+| Sprint 3 | Gestión de Trámites (estados, historial, Layout dinámico) | Completado |
+| Sprint 4 | Gestión de Hitos (estados, avance automático, timeline) | Completado |
 | Sprint 5 | Gestión de Convenios | Pendiente |
 | Sprint 6 | Generación de Documentos | Pendiente |
