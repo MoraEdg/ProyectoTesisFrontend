@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Hito } from '../types/hito';
 import { COLORES_ESTADO_HITO } from './badgeEstado';
 import ModalCambioEstado from './ModalCambioEstado';
+import DocumentosHito from './DocumentosHito';
 import { cambiarEstadoHito } from '../api/hitosApi';
 
 interface TimelineHitosProps {
@@ -17,7 +18,7 @@ const TRANSICIONES_HITO: Record<string, { estado: string; label: string; icon: s
     { estado: 'OBSERVADO', label: 'Observar', icon: 'fa-solid fa-triangle-exclamation' },
   ],
   OBSERVADO:   [{ estado: 'EN_REVISION', label: 'Volver a revisión', icon: 'fa-solid fa-rotate' }],
-  APROBADO:    [],
+  APROBADO:    [{ estado: 'EN_REVISION', label: 'Revertir aprobación', icon: 'fa-solid fa-rotate-left' }],
 };
 
 export default function TimelineHitos({ hitos, esCoordinador, onCambio }: TimelineHitosProps) {
@@ -64,7 +65,8 @@ export default function TimelineHitos({ hitos, esCoordinador, onCambio }: Timeli
 
       <div className="space-y-4">
         {hitos.map((h) => {
-          const acciones = TRANSICIONES_HITO[h.estado] ?? [];
+          // Hitos con documento obligatorio se gestionan vía DocumentosHito, no manualmente
+          const acciones = h.tiene_documento_obligatorio ? [] : (TRANSICIONES_HITO[h.estado] ?? []);
           return (
             <div key={h.id_hito} className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50/50">
               <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
@@ -101,6 +103,17 @@ export default function TimelineHitos({ hitos, esCoordinador, onCambio }: Timeli
                       {a.label}
                     </button>
                   ))}
+                </div>
+              )}
+
+              {h.tiene_documento_obligatorio && (
+                <div className="ml-10">
+                  <DocumentosHito
+                    hitoId={h.id_hito}
+                    tipoDocumentoNombre={h.tipo_documento_nombre}
+                    esCoordinador={esCoordinador}
+                    onCambio={onCambio}
+                  />
                 </div>
               )}
             </div>

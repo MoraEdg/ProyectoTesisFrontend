@@ -9,6 +9,8 @@ export interface Hito {
   fecha_aprobacion: string | null;
   aprobador_nombres: string | null;
   aprobador_apellidos: string | null;
+  tiene_documento_obligatorio: boolean;
+  tipo_documento_nombre: string | null;
 }
 
 export interface HistorialHitoEntry {

@@ -33,14 +33,17 @@ src/
 │   ├── axiosConfig.ts          — Instancia de Axios con interceptores JWT y manejo de 401
 │   ├── estudiantesApi.ts       — Funciones API del módulo de estudiantes
 │   ├── tramitesApi.ts          — Funciones API del módulo de trámites y catálogos
-│   └── hitosApi.ts             — Funciones API del módulo de hitos
+│   ├── hitosApi.ts             — Funciones API del módulo de hitos
+│   └── documentosApi.ts        — Funciones API del módulo de documentos (subir, aprobar, observar, descargar)
 ├── components/
 │   ├── PrivateRoute.tsx        — Protección de rutas por autenticación y rol
 │   ├── Layout.tsx              — Layout institucional (navbar + sidebar dinámico por rol)
 │   ├── ModalConfirmacion.tsx   — Modal de confirmación (desactivar estudiantes)
 │   ├── ModalCambioEstado.tsx   — Modal de cambio de estado con comentario
 │   ├── TimelineHitos.tsx       — Lista visual de hitos con acciones por estado
-│   └── badgeEstado.ts          — Colores centralizados de estados (trámite + hito)
+│   ├── DocumentosHito.tsx      — Gestión de documentos de un hito (subir, aprobar, observar, descargar)
+│   ├── ModalObservarDocumento.tsx — Modal de observación con comentario obligatorio
+│   └── badgeEstado.ts          — Colores centralizados de estados (trámite + hito + documento)
 ├── context/
 │   └── AuthContext.tsx         — Contexto de autenticación global (AuthProvider, useAuth)
 ├── pages/
@@ -59,7 +62,8 @@ src/
 ├── types/
 │   ├── estudiante.ts           — Interfaces del módulo de estudiantes
 │   ├── tramite.ts              — Interfaces del módulo de trámites
-│   └── hito.ts                 — Interfaces del módulo de hitos
+│   ├── hito.ts                 — Interfaces del módulo de hitos
+│   └── documento.ts            — Interfaces del módulo de documentos
 └── utils/
     └── roles.ts                — Constantes de roles del sistema
 ```
@@ -177,6 +181,24 @@ Acceso exclusivo del rol **Coordinador**.
 - Vista de solo lectura para el Estudiante
 - Layout unificado con sidebar dinámico por rol
 
+---
+
+## Módulo de Documentos (Sprint 5)
+
+Integrado dentro del detalle del trámite, en cada hito que tiene un documento obligatorio configurado.
+
+**Coordinador:** sube, aprueba y observa documentos.
+**Estudiante:** sube documentos a sus propios trámites y consulta observaciones (solo lectura para aprobar/observar).
+
+**Funcionalidades:**
+- Subida de archivo `.pdf` con validación de extensión y tamaño máximo
+- Transición automática a "EN_REVISION" tras la subida
+- Aprobar/Observar documento (Coordinador) con comentario obligatorio al observar
+- Versionado automático: subir un nuevo archivo reemplaza la versión anterior (salvo que esté APROBADO)
+- Descarga autenticada del documento vigente
+- Historial de observaciones por documento
+- Los hitos con documento obligatorio ocultan sus acciones manuales (Aprobar/Observar del hito): su estado se sincroniza automáticamente con el del documento
+
 ### Identidad visual
 
 La interfaz replica la identidad institucional UISEK:
@@ -220,5 +242,5 @@ El proyecto usa una configuración estricta:
 | Sprint 2 | Gestión de Estudiantes (CRUD, importación, identidad UISEK) | Completado |
 | Sprint 3 | Gestión de Trámites (estados, historial, Layout dinámico) | Completado |
 | Sprint 4 | Gestión de Hitos (estados, avance automático, timeline) | Completado |
-| Sprint 5 | Gestión de Convenios | Pendiente |
-| Sprint 6 | Generación de Documentos | Pendiente |
+| Sprint 5 | Gestión de Documentos (subida, aprobación, versionado) | Completado |
+| Sprint 6 | Generación de Documentos Word | Pendiente |

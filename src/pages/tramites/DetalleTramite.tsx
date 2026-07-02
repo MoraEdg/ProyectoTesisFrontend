@@ -12,7 +12,6 @@ import TimelineHitos from '../../components/TimelineHitos';
 const TRANSICIONES: Record<string, { estado: string; label: string; icon: string }[]> = {
   INICIADO:    [{ estado: 'EN_REVISION', label: 'Enviar a revisión', icon: 'fa-solid fa-paper-plane' }],
   EN_REVISION: [
-    { estado: 'APROBADO',  label: 'Aprobar',  icon: 'fa-solid fa-check' },
     { estado: 'OBSERVADO', label: 'Observar', icon: 'fa-solid fa-triangle-exclamation' },
   ],
   OBSERVADO:   [{ estado: 'CORREGIDO', label: 'Marcar corregido', icon: 'fa-solid fa-rotate' }],
