@@ -34,7 +34,8 @@ src/
 │   ├── estudiantesApi.ts       — Funciones API del módulo de estudiantes
 │   ├── tramitesApi.ts          — Funciones API del módulo de trámites y catálogos
 │   ├── hitosApi.ts             — Funciones API del módulo de hitos
-│   └── documentosApi.ts        — Funciones API del módulo de documentos (subir, aprobar, observar, descargar)
+│   ├── documentosApi.ts        — Funciones API del módulo de documentos (subir, aprobar, observar, descargar)
+│   └── generacionApi.ts        — Funciones API del módulo de generación (listarTipos, generar, listarGenerados, descargar)
 ├── components/
 │   ├── PrivateRoute.tsx        — Protección de rutas por autenticación y rol
 │   ├── Layout.tsx              — Layout institucional (navbar + sidebar dinámico por rol)
@@ -43,6 +44,8 @@ src/
 │   ├── TimelineHitos.tsx       — Lista visual de hitos con acciones por estado
 │   ├── DocumentosHito.tsx      — Gestión de documentos de un hito (subir, aprobar, observar, descargar)
 │   ├── ModalObservarDocumento.tsx — Modal de observación con comentario obligatorio
+│   ├── ModalGenerarDocumento.tsx  — Selector de tipo + formulario dinámico de generación (Sprint 6)
+│   ├── DocumentosGenerados.tsx    — Historial de documentos generados con re-descarga (Sprint 6)
 │   └── badgeEstado.ts          — Colores centralizados de estados (trámite + hito + documento)
 ├── context/
 │   └── AuthContext.tsx         — Contexto de autenticación global (AuthProvider, useAuth)
@@ -58,12 +61,13 @@ src/
 │   └── tramites/
 │       ├── ListaTramites.tsx         — Tabla de trámites (Coordinador)
 │       ├── FormTramite.tsx           — Crear trámite (estudiante + proceso + período)
-│       └── DetalleTramite.tsx        — Detalle + hitos + timeline historial + acciones
+│       └── DetalleTramite.tsx        — Detalle + hitos + documentos generados + timeline + acciones
 ├── types/
 │   ├── estudiante.ts           — Interfaces del módulo de estudiantes
 │   ├── tramite.ts              — Interfaces del módulo de trámites
 │   ├── hito.ts                 — Interfaces del módulo de hitos
-│   └── documento.ts            — Interfaces del módulo de documentos
+│   ├── documento.ts            — Interfaces del módulo de documentos
+│   └── documentoGenerado.ts    — Interfaces del módulo de generación (TipoDocumentoGenerado, DocumentoGenerado, ETIQUETAS_TIPO)
 └── utils/
     └── roles.ts                — Constantes de roles del sistema
 ```
@@ -210,6 +214,40 @@ La interfaz replica la identidad institucional UISEK:
 
 ---
 
+## Módulo de Generación de Documentos (Sprint 6)
+
+Acceso exclusivo del rol **Coordinador**. Integrado dentro del detalle del trámite.
+
+**Tipos de documento disponibles:**
+
+| ID | Nombre | Marcadores |
+|---|---|---|
+| 1 | FPP2 - Carta de Formalización (con convenio) | FECHA, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
+| 2 | FPP2 - Carta de Formalización (sin convenio) | FECHA, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
+| 3 | Carta de Petición | FECHA, GERENTE, CARGO, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
+| 4 | FPP3 - Seguimiento (plantilla vacía) | Sin marcadores — descarga directa |
+
+**Componentes:**
+- `ModalGenerarDocumento.tsx` — Selector de tipo + formulario dinámico (campos según tipo) + descarga inmediata al generar
+- `DocumentosGenerados.tsx` — Historial de documentos generados para el trámite con re-descarga
+
+**Flujo:**
+1. Coordinador abre "Generar documento" desde DetalleTramite
+2. Selecciona el tipo; el modal muestra los campos requeridos para ese tipo
+3. Al confirmar, el backend reemplaza marcadores en la plantilla `.docx` y envía el archivo
+4. El navegador descarga el archivo automáticamente y el historial se actualiza
+
+**API utilizada (`generacionApi.ts`):**
+
+| Función | Método | Ruta |
+|---|---|---|
+| `listarTipos()` | GET | `/api/v1/generacion/tipos` |
+| `generarDocumento(tramiteId, datos)` | POST | `/api/v1/tramites/:id/generar-documento` |
+| `listarGenerados(tramiteId)` | GET | `/api/v1/tramites/:id/documentos-generados` |
+| `descargarGenerado(id, nombre)` | GET | `/api/v1/generacion/documentos/:id/descargar` |
+
+---
+
 ## Configuración TypeScript
 
 El proyecto usa una configuración estricta:
@@ -243,4 +281,4 @@ El proyecto usa una configuración estricta:
 | Sprint 3 | Gestión de Trámites (estados, historial, Layout dinámico) | Completado |
 | Sprint 4 | Gestión de Hitos (estados, avance automático, timeline) | Completado |
 | Sprint 5 | Gestión de Documentos (subida, aprobación, versionado) | Completado |
-| Sprint 6 | Generación de Documentos Word | Pendiente |
+| Sprint 6 | Generación de Documentos Word | Completado |

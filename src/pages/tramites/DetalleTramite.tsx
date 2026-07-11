@@ -8,6 +8,8 @@ import { useAuth } from '../../context/AuthContext';
 import { COLORES_ESTADO_TRAMITE } from '../../components/badgeEstado';
 import ModalCambioEstado from '../../components/ModalCambioEstado';
 import TimelineHitos from '../../components/TimelineHitos';
+import ModalGenerarDocumento from '../../components/ModalGenerarDocumento';
+import DocumentosGenerados from '../../components/DocumentosGenerados';
 
 const TRANSICIONES: Record<string, { estado: string; label: string; icon: string }[]> = {
   INICIADO:    [{ estado: 'EN_REVISION', label: 'Enviar a revisión', icon: 'fa-solid fa-paper-plane' }],
@@ -34,6 +36,8 @@ export default function DetalleTramite() {
   const [modalVisible, setModalVisible]     = useState(false);
   const [estadoDestino, setEstadoDestino]   = useState('');
   const [procesando, setProcesando]         = useState(false);
+  const [modalGenerar, setModalGenerar]     = useState(false);
+  const [genKey, setGenKey]                 = useState(0);
 
   const cargarDatos = async () => {
     if (!id) return;
@@ -173,7 +177,7 @@ export default function DetalleTramite() {
         </div>
 
         {/* Acciones de estado del trámite — solo Coordinador */}
-        {esCoordinador && (accionesDisponibles.length > 0 || tramite.estado === 'APROBADO') && (
+        {esCoordinador && (
           <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-100">
             {accionesDisponibles.map((a) => (
               <button
@@ -196,6 +200,13 @@ export default function DetalleTramite() {
                 Finalizar trámite
               </button>
             )}
+            <button
+              onClick={() => setModalGenerar(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors"
+            >
+              <i className="fa-solid fa-file-word" />
+              Generar documento
+            </button>
           </div>
         )}
       </div>
@@ -204,6 +215,13 @@ export default function DetalleTramite() {
       {hitos.length > 0 && (
         <div className="mb-6">
           <TimelineHitos hitos={hitos} esCoordinador={esCoordinador} onCambio={recargar} />
+        </div>
+      )}
+
+      {/* Documentos generados — solo Coordinador */}
+      {esCoordinador && id && (
+        <div className="mb-6">
+          <DocumentosGenerados tramiteId={id} key={genKey} />
         </div>
       )}
 
@@ -248,6 +266,19 @@ export default function DetalleTramite() {
         onCancelar={() => setModalVisible(false)}
         cargando={procesando}
       />
+
+      {tramite && (
+        <ModalGenerarDocumento
+          visible={modalGenerar}
+          tramite={tramite}
+          onExito={() => {
+            setModalGenerar(false);
+            setAlerta({ tipo: 'exito', texto: 'Documento generado y descargado correctamente' });
+            setGenKey((k) => k + 1);
+          }}
+          onCerrar={() => setModalGenerar(false)}
+        />
+      )}
     </div>
   );
 }
