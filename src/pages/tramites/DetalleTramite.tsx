@@ -160,11 +160,25 @@ export default function DetalleTramite() {
 
       {/* Datos + estado */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-2 mb-6">
           <span className={`inline-block px-3 py-1 rounded text-xs font-medium ${COLORES_ESTADO_TRAMITE[tramite.estado] ?? 'bg-gray-100'}`}>
             {tramite.estado}
           </span>
           <span className="text-gray-400 text-xs">{tramite.codigo_tramite}</span>
+          {tramite.modalidad && (
+            <span className="inline-block px-3 py-1 rounded text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">
+              {tramite.modalidad === 'PRACTICA' ? 'Práctica' : 'Pasantía'}
+            </span>
+          )}
+          {tramite.modalidad && tramite.tiene_convenio !== null && (
+            <span className={`inline-block px-3 py-1 rounded text-xs font-medium border ${
+              tramite.tiene_convenio
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                : 'bg-amber-50 text-amber-700 border-amber-100'
+            }`}>
+              {tramite.tiene_convenio ? 'Con convenio' : 'Sin convenio'}
+            </span>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
@@ -200,13 +214,15 @@ export default function DetalleTramite() {
                 Finalizar trámite
               </button>
             )}
-            <button
-              onClick={() => setModalGenerar(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors"
-            >
-              <i className="fa-solid fa-file-word" />
-              Generar documento
-            </button>
+            {tramite.tipo_proceso === 'Prácticas Preprofesionales' && (
+              <button
+                onClick={() => setModalGenerar(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors"
+              >
+                <i className="fa-solid fa-file-word" />
+                Generar documento
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -32,7 +32,14 @@ export async function obtenerTramite(id: string) {
   return res.data.data;
 }
 
-export async function crearTramite(datos: { estudiante_id: string; tipo_proceso_id: number; periodo_id: number }) {
+export async function crearTramite(datos: {
+  estudiante_id: string;
+  tipo_proceso_id: number;
+  periodo_id: number;
+  tiene_convenio?: boolean;
+  modalidad?: 'PRACTICA' | 'PASANTIA';
+  institucion_empresa?: string;
+}) {
   const res = await api.post<RespuestaUno>('/tramites', datos);
   return res.data.data;
 }

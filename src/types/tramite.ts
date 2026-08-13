@@ -11,6 +11,9 @@ export interface Tramite {
   periodo: string;
   estado_id: number;
   estado: string;
+  tiene_convenio: boolean | null;
+  modalidad: 'PRACTICA' | 'PASANTIA' | null;
+  institucion_empresa: string | null;
   id_estudiante: string;
   nombres: string;
   apellidos: string;

@@ -11,11 +11,14 @@ const menuCoordinador: MenuItem[] = [
   { to: '/dashboard',    label: 'Inicio',       icon: 'fa-solid fa-house' },
   { to: '/estudiantes',  label: 'Estudiantes',  icon: 'fa-solid fa-user-graduate' },
   { to: '/tramites',     label: 'Trámites',     icon: 'fa-solid fa-folder-open' },
+  { to: '/convenios',    label: 'Convenios',    icon: 'fa-solid fa-handshake' },
+  { to: '/reportes',     label: 'Reportes',     icon: 'fa-solid fa-chart-bar' },
 ];
 
 const menuEstudiante: MenuItem[] = [
   { to: '/dashboard',      label: 'Inicio',       icon: 'fa-solid fa-house' },
   { to: '/mis-tramites',   label: 'Mis Trámites', icon: 'fa-solid fa-folder-open' },
+  { to: '/convenios',      label: 'Convenios',    icon: 'fa-solid fa-handshake' },
 ];
 
 function getMenu(rol: string | undefined): MenuItem[] {

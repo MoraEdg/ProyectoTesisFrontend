@@ -12,6 +12,8 @@ import ImportarEstudiantes from './pages/estudiantes/ImportarEstudiantes';
 import ListaTramites from './pages/tramites/ListaTramites';
 import FormTramite from './pages/tramites/FormTramite';
 import DetalleTramite from './pages/tramites/DetalleTramite';
+import ListaConvenios from './pages/convenios/ListaConvenios';
+import Reportes from './pages/reportes/Reportes';
 
 function SinPermisos() {
   return (
@@ -66,6 +68,14 @@ export default function App() {
             } />
             <Route path="/tramites/:id" element={
               <PrivateRoute roles={['Coordinador', 'Estudiante']}><DetalleTramite /></PrivateRoute>
+            } />
+
+            {/* Convenios — cualquier rol autenticado (Sprint 7) */}
+            <Route path="/convenios" element={<ListaConvenios />} />
+
+            {/* Reportes — solo Coordinador (Sprint 8) */}
+            <Route path="/reportes" element={
+              <PrivateRoute roles={['Coordinador']}><Reportes /></PrivateRoute>
             } />
 
             {/* Estudiante — Mis Trámites */}

@@ -3,25 +3,27 @@
 **Autor:** Edgar Mora  
 **Proyecto de Tesis — Universidad SEK**
 
-| Recurso | Enlace |
-|---|---|
-| Repositorio Frontend | https://github.com/MoraEdg/ProyectoTesisFrontend.git |
-| Repositorio Backend | https://github.com/MoraEdg/ProyectoTesisBackend.git |
-| Tablero Jira | https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog |
+| Recurso              | Enlace                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Repositorio Frontend | https://github.com/MoraEdg/ProyectoTesisFrontend.git                               |
+| Repositorio Backend  | https://github.com/MoraEdg/ProyectoTesisBackend.git                                |
+| Tablero Jira         | https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog |
 
 ---
 
 ## Stack tecnológico
 
-| Tecnología | Versión | Uso |
-|---|---|---|
-| React | 19.x | Librería UI |
-| Vite | 7.x | Bundler y servidor de desarrollo |
-| TypeScript | 5.8 | Tipado estático |
-| Tailwind CSS | 3.x | Estilos utilitarios |
-| react-router-dom | 6.x | Enrutamiento SPA |
-| axios | 1.7.x | Cliente HTTP |
-| react-hook-form | 7.x | Gestión de formularios |
+| Tecnología       | Versión | Uso                                         |
+| ---------------- | ------- | ------------------------------------------- |
+| React            | 19.x    | Librería UI                                 |
+| Vite             | 7.x     | Bundler y servidor de desarrollo            |
+| TypeScript       | 5.8     | Tipado estático (modo strict)               |
+| Tailwind CSS     | 3.x     | Estilos utilitarios                         |
+| react-router-dom | 6.x     | Enrutamiento SPA                            |
+| axios            | 1.7.x   | Cliente HTTP con interceptores JWT          |
+| react-hook-form  | 7.x     | Gestión de formularios                      |
+| recharts         | 3.x     | Gráficos (PieChart, BarChart) — Sprint 8    |
+| xlsx (SheetJS)   | 0.18.x  | Exportación Excel cliente — Sprint 8        |
 
 ---
 
@@ -30,44 +32,63 @@
 ```
 src/
 ├── api/
-│   ├── axiosConfig.ts          — Instancia de Axios con interceptores JWT y manejo de 401
-│   ├── estudiantesApi.ts       — Funciones API del módulo de estudiantes
-│   ├── tramitesApi.ts          — Funciones API del módulo de trámites y catálogos
-│   ├── hitosApi.ts             — Funciones API del módulo de hitos
-│   ├── documentosApi.ts        — Funciones API del módulo de documentos (subir, aprobar, observar, descargar)
-│   └── generacionApi.ts        — Funciones API del módulo de generación (listarTipos, generar, listarGenerados, descargar)
+│   ├── axiosConfig.ts          — Instancia Axios con interceptores JWT y manejo de 401
+│   ├── estudiantesApi.ts       — Módulo de estudiantes
+│   ├── tramitesApi.ts          — Módulo de trámites y catálogos (periodos, tipos de proceso)
+│   ├── hitosApi.ts             — Módulo de hitos
+│   ├── documentosApi.ts        — Módulo de documentos (subir, aprobar, observar, descargar)
+│   ├── generacionApi.ts        — Módulo de generación Word (Sprint 6)
+│   ├── conveniosApi.ts         — Módulo de convenios (Sprint 7)
+│   └── reportesApi.ts          — Módulo de reportes — getDashboard, getPlanificacion (Sprint 8)
+│
 ├── components/
-│   ├── PrivateRoute.tsx        — Protección de rutas por autenticación y rol
-│   ├── Layout.tsx              — Layout institucional (navbar + sidebar dinámico por rol)
-│   ├── ModalConfirmacion.tsx   — Modal de confirmación (desactivar estudiantes)
-│   ├── ModalCambioEstado.tsx   — Modal de cambio de estado con comentario
-│   ├── TimelineHitos.tsx       — Lista visual de hitos con acciones por estado
-│   ├── DocumentosHito.tsx      — Gestión de documentos de un hito (subir, aprobar, observar, descargar)
-│   ├── ModalObservarDocumento.tsx — Modal de observación con comentario obligatorio
-│   ├── ModalGenerarDocumento.tsx  — Selector de tipo + formulario dinámico de generación (Sprint 6)
-│   ├── DocumentosGenerados.tsx    — Historial de documentos generados con re-descarga (Sprint 6)
-│   └── badgeEstado.ts          — Colores centralizados de estados (trámite + hito + documento)
+│   ├── PrivateRoute.tsx            — Protección de rutas por autenticación y rol
+│   ├── Layout.tsx                  — Navbar + sidebar dinámico por rol
+│   ├── ModalConfirmacion.tsx       — Modal de confirmación genérico
+│   ├── ModalCambioEstado.tsx       — Modal de cambio de estado con comentario
+│   ├── ModalDetalleConvenio.tsx    — Modal de detalle de convenio (Sprint 7)
+│   ├── ModalGenerarDocumento.tsx   — Selector de tipo + formulario de generación Word (Sprint 6)
+│   ├── ModalObservarDocumento.tsx  — Modal de observación con comentario obligatorio
+│   ├── TimelineHitos.tsx           — Lista visual de hitos con acciones
+│   ├── DocumentosHito.tsx          — Gestión de documentos dentro de un hito
+│   ├── DocumentosGenerados.tsx     — Historial de documentos generados (Sprint 6)
+│   ├── badgeEstado.ts              — Colores centralizados (tramite + hito + documento + convenio)
+│   └── reportes/
+│       ├── TarjetaMetrica.tsx      — Tarjeta de métrica con ícono y valor (Sprint 8)
+│       ├── GraficoReporte.tsx      — PieChart y BarChart con recharts (Sprint 8)
+│       ├── FiltrosPlanificacion.tsx — 6 filtros para la planificación semestral (Sprint 8)
+│       └── PlanificacionSemestral.tsx — Tabla + paginación + exportación Excel (Sprint 8)
+│
 ├── context/
-│   └── AuthContext.tsx         — Contexto de autenticación global (AuthProvider, useAuth)
+│   └── AuthContext.tsx          — Contexto de autenticación global (AuthProvider, useAuth)
+│
 ├── pages/
-│   ├── Login.tsx               — Login con identidad visual institucional UISEK
-│   ├── Dashboard.tsx           — Panel dinámico por rol con accesos a módulos
-│   ├── MisTramites.tsx         — Lista de trámites del Estudiante (solo lectura)
+│   ├── Login.tsx                — Login con identidad visual institucional UISEK
+│   ├── Dashboard.tsx            — Panel dinámico por rol con tarjetas de acceso
+│   ├── MisTramites.tsx          — Lista de trámites del Estudiante (solo lectura)
 │   ├── estudiantes/
-│   │   ├── ListaEstudiantes.tsx      — Tabla de estudiantes con acciones
-│   │   ├── DetalleEstudiante.tsx     — Vista de solo lectura
-│   │   ├── FormEstudiante.tsx        — Formulario crear/editar (modo dual)
-│   │   └── ImportarEstudiantes.tsx   — Importación desde Excel con reporte
-│   └── tramites/
-│       ├── ListaTramites.tsx         — Tabla de trámites (Coordinador)
-│       ├── FormTramite.tsx           — Crear trámite (estudiante + proceso + período)
-│       └── DetalleTramite.tsx        — Detalle + hitos + documentos generados + timeline + acciones
+│   │   ├── ListaEstudiantes.tsx     — Tabla con acciones (ver, editar, desactivar)
+│   │   ├── DetalleEstudiante.tsx    — Vista de solo lectura
+│   │   ├── FormEstudiante.tsx       — Formulario crear/editar (modo dual)
+│   │   └── ImportarEstudiantes.tsx  — Importación masiva desde Excel
+│   ├── tramites/
+│   │   ├── ListaTramites.tsx        — Tabla de trámites (Coordinador)
+│   │   ├── FormTramite.tsx          — Crear trámite con campos condicionales por proceso
+│   │   └── DetalleTramite.tsx       — Detalle + hitos + documentos + timeline + generación
+│   ├── convenios/
+│   │   └── ListaConvenios.tsx       — Tabla con filtros locales y modal de detalle (Sprint 7)
+│   └── reportes/
+│       └── Reportes.tsx             — Dashboard ejecutivo + Planificación semestral (Sprint 8)
+│
 ├── types/
 │   ├── estudiante.ts           — Interfaces del módulo de estudiantes
-│   ├── tramite.ts              — Interfaces del módulo de trámites
+│   ├── tramite.ts              — Interfaces de trámites (incl. modalidad, tiene_convenio, institucion_empresa)
 │   ├── hito.ts                 — Interfaces del módulo de hitos
 │   ├── documento.ts            — Interfaces del módulo de documentos
-│   └── documentoGenerado.ts    — Interfaces del módulo de generación (TipoDocumentoGenerado, DocumentoGenerado, ETIQUETAS_TIPO)
+│   ├── documentoGenerado.ts    — Interfaces de generación (TipoDocumentoGenerado, ETIQUETAS_TIPO)
+│   ├── convenio.ts             — Interfaces del módulo de convenios (Sprint 7)
+│   └── reporte.ts              — Interfaces del módulo de reportes (Sprint 8)
+│
 └── utils/
     └── roles.ts                — Constantes de roles del sistema
 ```
@@ -77,7 +98,7 @@ src/
 ## Requisitos previos
 
 - Node.js 20+
-- El [backend](https://github.com/MoraEdg/ProyectoTesisBackend) debe estar corriendo en `http://localhost:5000`
+- El [backend](https://github.com/MoraEdg/ProyectoTesisBackend) corriendo en `http://localhost:5000`
 
 ---
 
@@ -91,15 +112,17 @@ cd ProyectoTesisFrontend
 npm install
 ```
 
-### 2. Configurar variables de entorno
+### 2. Variables de entorno
 
-El archivo `.env` ya incluye la configuración por defecto:
+Copiar `.env.example` a `.env` y ajustar la URL si el backend corre en otro puerto u host:
+
+```bash
+cp .env.example .env
+```
 
 ```env
 VITE_API_URL=http://localhost:5000/api/v1
 ```
-
-Para apuntar a otro entorno, crear `.env.local` y sobreescribir la variable.
 
 ### 3. Levantar en desarrollo
 
@@ -107,7 +130,7 @@ Para apuntar a otro entorno, crear `.env.local` y sobreescribir la variable.
 npm run dev
 ```
 
-La aplicación queda disponible en `http://localhost:5173`.
+Aplicación disponible en `http://localhost:5173`.
 
 ### 4. Build de producción
 
@@ -120,165 +143,151 @@ npm run preview
 
 ## Autenticación
 
-El sistema usa **JWT Bearer token** almacenado en `localStorage`.
+JWT Bearer token almacenado en `localStorage`.
 
-- El token se añade automáticamente a cada request HTTP via interceptor de Axios.
-- Si el servidor responde con `401`, el token se elimina y se redirige a `/login`.
-- La sesión se restaura automáticamente al recargar la página desde `localStorage`.
+- El token se añade automáticamente a cada request via interceptor de Axios.
+- Si el servidor responde `401`, el token se elimina y se redirige a `/login`.
 
 **Credenciales de prueba:**
 
-| Campo | Valor |
-|---|---|
-| Usuario | `admin` |
-| Contraseña | `Admin1234` |
-| Rol | `Coordinador` |
-| Ruta post-login | `/dashboard` |
+| Campo           | Valor         |
+| --------------- | ------------- |
+| Usuario         | `admin`       |
+| Contraseña      | `Admin1234`   |
+| Rol             | `Coordinador` |
+| Ruta post-login | `/dashboard`  |
 
 ---
 
-## Roles y rutas protegidas
+## Rutas de la aplicación
 
-| Rol | Ruta inicial | Acceso |
-|---|---|---|
-| `Estudiante` | `/mis-tramites` | Solo sus trámites |
-| `Coordinador` | `/dashboard` | Gestión completa |
-| `Director` | `/tramites` | Revisión de trámites |
-| `Decano` | `/tramites` | Aprobación final |
-
-Las rutas están protegidas por `PrivateRoute` que verifica autenticación y rol antes de renderizar.
-
----
-
-## Módulo de Estudiantes (Sprint 2)
-
-Acceso exclusivo del rol **Coordinador**.
-
-| Ruta | Página | Descripción |
-|---|---|---|
-| `/estudiantes` | ListaEstudiantes | Tabla con acciones Ver, Editar, Desactivar |
-| `/estudiantes/nuevo` | FormEstudiante | Registro manual de un estudiante |
-| `/estudiantes/:id` | DetalleEstudiante | Vista de solo lectura |
-| `/estudiantes/:id/editar` | FormEstudiante | Edición (cédula no modificable) |
-| `/estudiantes/importar` | ImportarEstudiantes | Importación masiva desde Excel |
+| Ruta                    | Página                | Roles                      |
+| ----------------------- | --------------------- | -------------------------- |
+| `/login`                | Login                 | Pública                    |
+| `/dashboard`            | Dashboard             | Todos                      |
+| `/estudiantes`          | ListaEstudiantes      | Coordinador                |
+| `/estudiantes/nuevo`    | FormEstudiante        | Coordinador                |
+| `/estudiantes/:id`      | DetalleEstudiante     | Coordinador                |
+| `/estudiantes/:id/editar` | FormEstudiante      | Coordinador                |
+| `/estudiantes/importar` | ImportarEstudiantes   | Coordinador                |
+| `/tramites`             | ListaTramites         | Coordinador                |
+| `/tramites/nuevo`       | FormTramite           | Coordinador                |
+| `/tramites/:id`         | DetalleTramite        | Coordinador, Estudiante    |
+| `/mis-tramites`         | MisTramites           | Estudiante                 |
+| `/mis-tramites/:id`     | DetalleTramite        | Estudiante                 |
+| `/convenios`            | ListaConvenios        | Todos (autenticados)       |
+| `/reportes`             | Reportes              | Coordinador                |
 
 ---
 
-## Módulo de Trámites (Sprint 3)
+## Módulos implementados
 
-**Coordinador:** gestión completa de trámites.
-**Estudiante:** consulta de sus propios trámites (solo lectura).
+### Módulo de Estudiantes (Sprint 2) — solo Coordinador
 
-| Ruta | Página | Roles |
-|---|---|---|
-| `/tramites` | ListaTramites | Coordinador |
-| `/tramites/nuevo` | FormTramite | Coordinador |
-| `/tramites/:id` | DetalleTramite | Coordinador, Estudiante |
-| `/mis-tramites` | MisTramites | Estudiante |
-| `/mis-tramites/:id` | DetalleTramite | Estudiante |
+- Tabla con búsqueda, paginación y acciones Ver / Editar / Desactivar
+- Registro manual con validación de cédula ecuatoriana (10 dígitos)
+- Importación masiva desde Excel con reporte de creados / duplicados / errores
+- Desactivación lógica (el estudiante deja de aparecer en la lista de selección de trámites)
 
-**Funcionalidades:**
-- Crear trámite seleccionando estudiante, tipo de proceso y período
-- Cambiar estado con modal de comentario (Coordinador)
-- Finalizar trámite desde estado APROBADO
-- Timeline visual del historial de estados
-- Vista de solo lectura para el Estudiante
-- Layout unificado con sidebar dinámico por rol
+### Módulo de Trámites (Sprint 3, 6.5) — Coordinador y Estudiante
 
----
+**Campos condicionales en `FormTramite` según el tipo de proceso:**
 
-## Módulo de Documentos (Sprint 5)
+| Campo               | PP                | RL              | Convalidación |
+| ------------------- | ----------------- | --------------- | ------------- |
+| Modalidad           | Obligatorio       | Oculto          | Oculto        |
+| ¿Tiene convenio?    | Obligatorio       | Oculto          | Oculto        |
+| Institución/Empresa | **Obligatorio**   | Opcional        | Oculto        |
 
-Integrado dentro del detalle del trámite, en cada hito que tiene un documento obligatorio configurado.
+**Códigos de trámite generados automáticamente:**
+- Prácticas Preprofesionales → `PRAC-2026-001`
+- Reconocimiento Laboral → `RLAB-2026-001`
+- Convalidación → `CONV-2026-001`
 
-**Coordinador:** sube, aprueba y observa documentos.
-**Estudiante:** sube documentos a sus propios trámites y consulta observaciones (solo lectura para aprobar/observar).
+### Módulo de Hitos (Sprint 4) — Coordinador y Estudiante
 
-**Funcionalidades:**
-- Subida de archivo `.pdf` con validación de extensión y tamaño máximo
-- Transición automática a "EN_REVISION" tras la subida
-- Aprobar/Observar documento (Coordinador) con comentario obligatorio al observar
-- Versionado automático: subir un nuevo archivo reemplaza la versión anterior (salvo que esté APROBADO)
-- Descarga autenticada del documento vigente
+- Timeline visual con estado y acciones disponibles según el estado actual
+- Aprobación automática del hito al aprobar su documento obligatorio
+- El Coordinador no puede aprobar manualmente un hito con documento obligatorio
+
+### Módulo de Documentos (Sprint 5) — Coordinador y Estudiante
+
+- Subida de PDF con validación de extensión y tamaño
+- Versionado automático (la versión anterior se marca REEMPLAZADO)
+- El documento APROBADO no puede reemplazarse sin observarlo primero
 - Historial de observaciones por documento
-- Los hitos con documento obligatorio ocultan sus acciones manuales (Aprobar/Observar del hito): su estado se sincroniza automáticamente con el del documento
 
-### Identidad visual
+### Módulo de Generación Word (Sprint 6) — solo Coordinador
 
-La interfaz replica la identidad institucional UISEK:
-- Navbar fijo con color primario `#054690`
-- Sidebar dinámico por rol, con sombra sutil y bordes redondeados
-- Encabezados de tabla en `#6366F1`
-- Fuente Roboto (Google Fonts)
-- Iconografía Font Awesome 6
+Botón "Generar documento" visible únicamente en trámites de Prácticas Preprofesionales.
 
----
+| Tipo | Documento |
+|---|---|
+| 1 | FPP2 — Carta de Formalización (con convenio) |
+| 2 | FPP2 — Carta de Formalización (sin convenio) |
+| 3 | Carta de Petición                            |
+| 4 | FPP3 — Formato de Seguimiento (plantilla vacía) |
 
-## Módulo de Generación de Documentos (Sprint 6)
+### Módulo de Convenios (Sprint 7) — todos los roles
 
-Acceso exclusivo del rol **Coordinador**. Integrado dentro del detalle del trámite.
+- Tabla con 3 filtros locales: búsqueda por empresa/código, estado (EN_PROCESO, VIGENTE, SUSPENDIDO, FINALIZADO, CADUCADO) y año
+- Paginación local (10 registros/página)
+- Modal de detalle con 4 secciones: información general, contacto, fechas, datos institucionales
+- Soporte de múltiples correos (separador `;`) y duración con dos párrafos (separador `//`)
 
-**Tipos de documento disponibles:**
+### Módulo de Reportes (Sprint 8) — solo Coordinador
 
-| ID | Nombre | Marcadores |
-|---|---|---|
-| 1 | FPP2 - Carta de Formalización (con convenio) | FECHA, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
-| 2 | FPP2 - Carta de Formalización (sin convenio) | FECHA, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
-| 3 | Carta de Petición | FECHA, GERENTE, CARGO, EMPRESA, ESTUDIANTE, CEDULA, SEMESTRE, CARRERA |
-| 4 | FPP3 - Seguimiento (plantilla vacía) | Sin marcadores — descarga directa |
+**Tab 1 — Dashboard ejecutivo:**
 
-**Componentes:**
-- `ModalGenerarDocumento.tsx` — Selector de tipo + formulario dinámico (campos según tipo) + descarga inmediata al generar
-- `DocumentosGenerados.tsx` — Historial de documentos generados para el trámite con re-descarga
+| Métrica | Descripción |
+|---|---|
+| Total Estudiantes | Conteo global de estudiantes registrados |
+| Con Actividad | Estudiantes con ≥ 1 trámite en estado ≠ INICIADO |
+| Sin Actividad | Total − Con actividad |
+| Total Trámites | Total de trámites en el sistema |
+| Trámites Finalizados | Trámites en estado FINALIZADO |
 
-**Flujo:**
-1. Coordinador abre "Generar documento" desde DetalleTramite
-2. Selecciona el tipo; el modal muestra los campos requeridos para ese tipo
-3. Al confirmar, el backend reemplaza marcadores en la plantilla `.docx` y envía el archivo
-4. El navegador descarga el archivo automáticamente y el historial se actualiza
+4 gráficos (recharts): distribución por tipo de proceso (pie), origen de colocación (pie), modalidad (pie), estado de trámites (bar).
 
-**API utilizada (`generacionApi.ts`):**
+**Tab 2 — Planificación semestral:**
 
-| Función | Método | Ruta |
-|---|---|---|
-| `listarTipos()` | GET | `/api/v1/generacion/tipos` |
-| `generarDocumento(tramiteId, datos)` | POST | `/api/v1/tramites/:id/generar-documento` |
-| `listarGenerados(tramiteId)` | GET | `/api/v1/tramites/:id/documentos-generados` |
-| `descargarGenerado(id, nombre)` | GET | `/api/v1/generacion/documentos/:id/descargar` |
+6 filtros opcionales (período, tipo de proceso, estado, carrera, modalidad, convenio) que se envían al backend. La paginación y la exportación son locales.
+
+- Botón **"Exportar Excel"** genera un `.xlsx` con todos los registros del filtro actual (sin límite de página), con ajuste automático de ancho de columnas.
 
 ---
 
-## Configuración TypeScript
+## Identidad visual
 
-El proyecto usa una configuración estricta:
-
-| Opción | Valor | Implicación |
-|---|---|---|
-| `strict` | `true` | Tipado estricto completo |
-| `verbatimModuleSyntax` | `true` | Importaciones de tipo deben usar `import type` |
-| `noUnusedLocals` | `true` | No se permiten variables sin uso |
-| `noUnusedParameters` | `true` | No se permiten parámetros sin uso |
+- Color primario: `#054690` (UISEK azul)
+- Sidebar fijo izquierdo, navbar fijo superior
+- Tailwind CSS con colores personalizados `uisek` y `uisek-dark`
+- Font Awesome 6 para iconografía
+- Responsive: sidebar colapsado en pantallas < lg
 
 ---
 
 ## Scripts disponibles
 
-| Script | Descripción |
-|---|---|
-| `npm run dev` | Servidor de desarrollo en puerto 5173 |
-| `npm run build` | Build de producción |
-| `npm run preview` | Previsualización del build |
-| `npm run lint` | Análisis estático con ESLint |
+| Script            | Descripción                        |
+| ----------------- | ---------------------------------- |
+| `npm run dev`     | Servidor de desarrollo (puerto 5173) |
+| `npm run build`   | Build de producción                |
+| `npm run preview` | Previsualización del build         |
+| `npm run lint`    | Análisis estático con ESLint       |
 
 ---
 
 ## Estado del proyecto
 
-| Sprint | Módulo | Estado |
-|---|---|---|
-| Sprint 1 | Autenticación, rutas protegidas, Tailwind | Completado |
-| Sprint 2 | Gestión de Estudiantes (CRUD, importación, identidad UISEK) | Completado |
-| Sprint 3 | Gestión de Trámites (estados, historial, Layout dinámico) | Completado |
-| Sprint 4 | Gestión de Hitos (estados, avance automático, timeline) | Completado |
-| Sprint 5 | Gestión de Documentos (subida, aprobación, versionado) | Completado |
-| Sprint 6 | Generación de Documentos Word | Completado |
+| Sprint     | Módulo                                                           | Estado        |
+| ---------- | ---------------------------------------------------------------- | ------------- |
+| Sprint 1   | Autenticación, rutas protegidas, Tailwind, identidad UISEK       | ✅ Completado |
+| Sprint 2   | Gestión de Estudiantes (CRUD, importación, paginación)           | ✅ Completado |
+| Sprint 3   | Gestión de Trámites (estados, historial, layout dinámico)        | ✅ Completado |
+| Sprint 4   | Gestión de Hitos (timeline, avance automático)                   | ✅ Completado |
+| Sprint 5   | Gestión de Documentos (subida, versionado, aprobación)           | ✅ Completado |
+| Sprint 6   | Generación de Documentos Word                                    | ✅ Completado |
+| Sprint 6.5 | Ajustes: campos condicionales, hitos SIN/CON_CONVENIO, modal fix | ✅ Completado |
+| Sprint 7   | Convenios (consulta, filtros locales, modal detalle)             | ✅ Completado |
+| Sprint 8   | Reportes (dashboard, gráficos recharts, planificación, Excel)    | ✅ Completado |

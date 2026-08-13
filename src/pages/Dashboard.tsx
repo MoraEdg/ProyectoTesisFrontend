@@ -71,6 +71,44 @@ export default function Dashboard() {
             </p>
           </Link>
         )}
+
+        {/* Convenios — visible para todos los roles autenticados */}
+        <Link
+          to="/convenios"
+          className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
+        >
+          <div className="flex items-center gap-4 mb-3">
+            <div className="w-12 h-12 rounded-lg bg-uisek/10 flex items-center justify-center">
+              <i className="fa-solid fa-handshake text-uisek text-xl" />
+            </div>
+            <h2 className="text-lg font-medium text-gray-800 group-hover:text-uisek transition-colors">
+              Convenios
+            </h2>
+          </div>
+          <p className="text-gray-500 text-sm">
+            Consulta el listado e información de convenios institucionales.
+          </p>
+        </Link>
+
+        {/* Reportes — solo Coordinador */}
+        {esCoordinador && (
+          <Link
+            to="/reportes"
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
+          >
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 rounded-lg bg-uisek/10 flex items-center justify-center">
+                <i className="fa-solid fa-chart-bar text-uisek text-xl" />
+              </div>
+              <h2 className="text-lg font-medium text-gray-800 group-hover:text-uisek transition-colors">
+                Reportes
+              </h2>
+            </div>
+            <p className="text-gray-500 text-sm">
+              Dashboard ejecutivo y planificación semestral de prácticas.
+            </p>
+          </Link>
+        )}
       </div>
     </div>
   );

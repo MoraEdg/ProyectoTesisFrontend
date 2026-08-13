@@ -21,3 +21,11 @@ export const COLORES_ESTADO_DOCUMENTO: Record<string, string> = {
   APROBADO:    'bg-green-100 text-green-700',
   REEMPLAZADO: 'bg-slate-100 text-slate-500',
 };
+
+export const COLORES_ESTADO_CONVENIO: Record<string, string> = {
+  EN_PROCESO: 'bg-blue-100 text-blue-700',
+  VIGENTE:    'bg-green-100 text-green-700',
+  SUSPENDIDO: 'bg-yellow-100 text-yellow-700',
+  FINALIZADO: 'bg-purple-100 text-purple-700',
+  CADUCADO:   'bg-red-100 text-red-700',
+};

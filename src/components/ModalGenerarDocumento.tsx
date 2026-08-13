@@ -13,6 +13,7 @@ interface ModalGenerarDocumentoProps {
 
 interface FormState {
   tipo_documento_generado_id: number | '';
+  titulo: string;
   empresa: string;
   semestre: string;
   gerente: string;
@@ -21,6 +22,7 @@ interface FormState {
 
 const FORM_INICIAL: FormState = {
   tipo_documento_generado_id: '',
+  titulo: '',
   empresa: '',
   semestre: '',
   gerente: '',
@@ -65,6 +67,7 @@ export default function ModalGenerarDocumento({ visible, tramite, onExito, onCer
     try {
       await generarDocumento(tramite.id_tramite, {
         tipo_documento_generado_id: tipoId,
+        titulo:   form.titulo   || undefined,
         empresa:  form.empresa  || undefined,
         semestre: form.semestre || undefined,
         gerente:  form.gerente  || undefined,
@@ -83,14 +86,14 @@ export default function ModalGenerarDocumento({ visible, tramite, onExito, onCer
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
-        {/* Cabecera */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg flex flex-col max-h-[90vh]">
+        {/* Cabecera — siempre visible */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
           <h2 className="text-base font-bold text-gray-800">Generar documento oficial</h2>
           <button onClick={onCerrar} className="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
         </div>
 
-        <div className="px-6 py-5 space-y-4">
+        <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="px-4 py-3 rounded text-sm bg-red-50 border border-red-200 text-red-700">
               {error}
@@ -149,6 +152,27 @@ export default function ModalGenerarDocumento({ visible, tramite, onExito, onCer
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Título del destinatario
+                </label>
+                <select
+                  value={form.titulo}
+                  onChange={(e) => campo('titulo', e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-uisek"
+                >
+                  <option value="">Señor (por defecto)</option>
+                  <option value="Ing.">Ing.</option>
+                  <option value="Dr.">Dr.</option>
+                  <option value="MSc.">MSc.</option>
+                  <option value="Lic.">Lic.</option>
+                  <option value="Ph.D.">Ph.D.</option>
+                  <option value="Abg.">Abg.</option>
+                  <option value="Econ.">Econ.</option>
+                  <option value="Psic.">Psic.</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
                   Empresa <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -196,21 +220,25 @@ export default function ModalGenerarDocumento({ visible, tramite, onExito, onCer
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Semestre <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <select
                   value={form.semestre}
                   onChange={(e) => campo('semestre', e.target.value)}
-                  maxLength={30}
-                  placeholder="Ej: Séptimo semestre"
                   className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-uisek"
-                />
+                >
+                  <option value="">— Seleccione un semestre —</option>
+                  <option value="Cuarto">Cuarto</option>
+                  <option value="Quinto">Quinto</option>
+                  <option value="Sexto">Sexto</option>
+                  <option value="Séptimo">Séptimo</option>
+                  <option value="Octavo">Octavo</option>
+                </select>
               </div>
             </div>
           )}
         </div>
 
-        {/* Pie */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100">
+        {/* Pie — siempre visible */}
+        <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 shrink-0">
           <button
             onClick={onCerrar}
             disabled={generando}

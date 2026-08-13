@@ -64,7 +64,7 @@ export default function TimelineHitos({ hitos, esCoordinador, onCambio }: Timeli
       )}
 
       <div className="space-y-4">
-        {hitos.map((h) => {
+        {hitos.map((h, idx) => {
           // Hitos con documento obligatorio se gestionan vía DocumentosHito, no manualmente
           const acciones = h.tiene_documento_obligatorio ? [] : (TRANSICIONES_HITO[h.estado] ?? []);
           return (
@@ -72,7 +72,7 @@ export default function TimelineHitos({ hitos, esCoordinador, onCambio }: Timeli
               <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                 <div className="flex items-center gap-3">
                   <span className="w-7 h-7 rounded-full bg-uisek text-white text-xs font-bold flex items-center justify-center">
-                    {h.orden}
+                    {idx + 1}
                   </span>
                   <span className="font-medium text-gray-800">{h.nombre}</span>
                 </div>

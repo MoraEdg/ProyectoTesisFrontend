@@ -13,13 +13,16 @@ export default function FormTramite() {
   const [procesos, setProcesos]       = useState<TipoProceso[]>([]);
   const [periodos, setPeriodos]       = useState<Periodo[]>([]);
 
-  const [estudianteId, setEstudianteId]     = useState('');
-  const [tipoProcesoId, setTipoProcesoId]   = useState('');
-  const [periodoId, setPeriodoId]             = useState('');
+  const [estudianteId,      setEstudianteId]      = useState('');
+  const [tipoProcesoId,     setTipoProcesoId]     = useState('');
+  const [periodoId,         setPeriodoId]         = useState('');
+  const [modalidad,         setModalidad]         = useState<'PRACTICA' | 'PASANTIA' | ''>('');
+  const [tieneConvenio,     setTieneConvenio]     = useState<'' | 'true' | 'false'>();
+  const [institucionEmpresa, setInstitucionEmpresa] = useState('');
 
   const [cargandoDatos, setCargandoDatos] = useState(true);
-  const [cargando, setCargando]           = useState(false);
-  const [errorApi, setErrorApi]           = useState('');
+  const [cargando,      setCargando]      = useState(false);
+  const [errorApi,      setErrorApi]      = useState('');
 
   useEffect(() => {
     Promise.all([
@@ -38,6 +41,12 @@ export default function FormTramite() {
       .finally(() => setCargandoDatos(false));
   }, []);
 
+  const procesoSeleccionado  = procesos.find((p) => String(p.id) === tipoProcesoId);
+  const esPracticas          = procesoSeleccionado?.nombre === 'Prácticas Preprofesionales';
+  const esReconocimiento     = procesoSeleccionado?.nombre === 'Reconocimiento Laboral';
+  const mostrarInstitucion   = esPracticas || esReconocimiento;
+  const institucionObligatoria = esPracticas;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorApi('');
@@ -46,14 +55,30 @@ export default function FormTramite() {
       setErrorApi('Todos los campos son obligatorios');
       return;
     }
+    if (esPracticas && (!modalidad || tieneConvenio === undefined || tieneConvenio === '')) {
+      setErrorApi('Para Prácticas Preprofesionales indique la modalidad y si la empresa tiene convenio');
+      return;
+    }
+    if (institucionObligatoria && !institucionEmpresa.trim()) {
+      setErrorApi('Para Prácticas Preprofesionales debe indicar la institución o empresa');
+      return;
+    }
 
     setCargando(true);
     try {
-      const nuevo = await crearTramite({
+      const datos: Parameters<typeof crearTramite>[0] = {
         estudiante_id: estudianteId,
         tipo_proceso_id: parseInt(tipoProcesoId),
         periodo_id: parseInt(periodoId),
-      });
+      };
+      if (esPracticas && modalidad && tieneConvenio !== undefined && tieneConvenio !== '') {
+        datos.modalidad      = modalidad as 'PRACTICA' | 'PASANTIA';
+        datos.tiene_convenio = tieneConvenio === 'true';
+      }
+      if (mostrarInstitucion && institucionEmpresa.trim()) {
+        datos.institucion_empresa = institucionEmpresa.trim();
+      }
+      const nuevo = await crearTramite(datos);
       navigate(`/tramites/${nuevo.id_tramite}`);
     } catch (err) {
       const apiErr = err as { response?: { data?: { error?: string } } };
@@ -108,7 +133,12 @@ export default function FormTramite() {
               <label className="block text-sm text-gray-600 mb-1">Tipo de proceso *</label>
               <select
                 value={tipoProcesoId}
-                onChange={(e) => setTipoProcesoId(e.target.value)}
+                onChange={(e) => {
+                  setTipoProcesoId(e.target.value);
+                  setModalidad('');
+                  setTieneConvenio(undefined);
+                  setInstitucionEmpresa('');
+                }}
                 className="w-full h-12 px-4 text-sm border border-[#d8d8d8] rounded outline-none focus:border-uisek focus:shadow-[0_0_0_2px_rgba(8,83,148,0.2)] bg-white"
               >
                 <option value="">Seleccionar proceso...</option>
@@ -117,6 +147,53 @@ export default function FormTramite() {
                 ))}
               </select>
             </div>
+
+            {/* Campos exclusivos de Prácticas Preprofesionales */}
+            {esPracticas && (
+              <>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">Modalidad *</label>
+                  <select
+                    value={modalidad}
+                    onChange={(e) => setModalidad(e.target.value as 'PRACTICA' | 'PASANTIA' | '')}
+                    className="w-full h-12 px-4 text-sm border border-[#d8d8d8] rounded outline-none focus:border-uisek focus:shadow-[0_0_0_2px_rgba(8,83,148,0.2)] bg-white"
+                  >
+                    <option value="">Seleccionar modalidad...</option>
+                    <option value="PRACTICA">Práctica (sin remuneración)</option>
+                    <option value="PASANTIA">Pasantía (con remuneración)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">¿La empresa tiene convenio con UISEK? *</label>
+                  <select
+                    value={tieneConvenio ?? ''}
+                    onChange={(e) => setTieneConvenio(e.target.value as '' | 'true' | 'false')}
+                    className="w-full h-12 px-4 text-sm border border-[#d8d8d8] rounded outline-none focus:border-uisek focus:shadow-[0_0_0_2px_rgba(8,83,148,0.2)] bg-white"
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="true">Sí, tiene convenio</option>
+                    <option value="false">No tiene convenio</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            {/* Institución / Empresa — PP obligatorio, RL opcional, Convalidación oculto */}
+            {mostrarInstitucion && (
+              <div>
+                <label className="block text-sm text-gray-600 mb-1">
+                  Institución / Empresa{institucionObligatoria ? ' *' : ' (opcional)'}
+                </label>
+                <input
+                  type="text"
+                  value={institucionEmpresa}
+                  onChange={(e) => setInstitucionEmpresa(e.target.value)}
+                  placeholder="Nombre de la empresa o institución..."
+                  maxLength={255}
+                  className="w-full h-12 px-4 text-sm border border-[#d8d8d8] rounded outline-none focus:border-uisek focus:shadow-[0_0_0_2px_rgba(8,83,148,0.2)]"
+                />
+              </div>
+            )}
 
             {/* Período */}
             <div>

@@ -17,6 +17,7 @@ interface DatosGeneracion {
   semestre?: string;
   gerente?: string;
   cargo?: string;
+  titulo?: string;
 }
 
 // Genera el documento y lo descarga de inmediato.
