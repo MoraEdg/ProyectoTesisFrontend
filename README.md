@@ -3,11 +3,10 @@
 **Autor:** Edgar Mora  
 **Proyecto de Tesis — Universidad SEK**
 
-| Recurso              | Enlace                                                                             |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| Repositorio Frontend | https://github.com/MoraEdg/ProyectoTesisFrontend.git                               |
-| Repositorio Backend  | https://github.com/MoraEdg/ProyectoTesisBackend.git                                |
-| Tablero Jira         | https://edgarmoratesis.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog |
+| Recurso              | Enlace                                                |
+| -------------------- | ----------------------------------------------------- |
+| Repositorio Frontend | https://github.com/MoraEdg/ProyectoTesisFrontend.git |
+| Repositorio Backend  | https://github.com/MoraEdg/ProyectoTesisBackend.git  |
 
 ---
 
@@ -39,10 +38,12 @@ src/
 │   ├── documentosApi.ts        — Módulo de documentos (subir, aprobar, observar, descargar)
 │   ├── generacionApi.ts        — Módulo de generación Word (Sprint 6)
 │   ├── conveniosApi.ts         — Módulo de convenios (Sprint 7)
-│   └── reportesApi.ts          — Módulo de reportes — getDashboard, getPlanificacion (Sprint 8)
+│   ├── reportesApi.ts          — Módulo de reportes — getDashboard, getPlanificacion (Sprint 8)
+│   └── permisosApi.ts          — Módulo de permisos RBAC — getMios, getMatriz, putMatriz (Sprint 8)
 │
 ├── components/
 │   ├── PrivateRoute.tsx            — Protección de rutas por autenticación y rol
+│   ├── PermisoRoute.tsx            — Protección de rutas por permiso RBAC específico
 │   ├── Layout.tsx                  — Navbar + sidebar dinámico por rol
 │   ├── ModalConfirmacion.tsx       — Modal de confirmación genérico
 │   ├── ModalCambioEstado.tsx       — Modal de cambio de estado con comentario
@@ -77,8 +78,10 @@ src/
 │   │   └── DetalleTramite.tsx       — Detalle + hitos + documentos + timeline + generación
 │   ├── convenios/
 │   │   └── ListaConvenios.tsx       — Tabla con filtros locales y modal de detalle (Sprint 7)
-│   └── reportes/
-│       └── Reportes.tsx             — Dashboard ejecutivo + Planificación semestral (Sprint 8)
+│   ├── reportes/
+│   │   └── Reportes.tsx             — Dashboard ejecutivo + Planificación semestral (Sprint 8)
+│   └── configuracion/
+│       └── Configuracion.tsx        — Administración de matriz RBAC (Sprint 8)
 │
 ├── types/
 │   ├── estudiante.ts           — Interfaces del módulo de estudiantes
@@ -90,7 +93,7 @@ src/
 │   └── reporte.ts              — Interfaces del módulo de reportes (Sprint 8)
 │
 └── utils/
-    └── roles.ts                — Constantes de roles del sistema
+    (vacío)
 ```
 
 ---
@@ -177,6 +180,7 @@ JWT Bearer token almacenado en `localStorage`.
 | `/mis-tramites/:id`     | DetalleTramite        | Estudiante                 |
 | `/convenios`            | ListaConvenios        | Todos (autenticados)       |
 | `/reportes`             | Reportes              | Coordinador                |
+| `/configuracion`        | Configuracion         | Coordinador (settings.administrar) |
 
 ---
 
@@ -235,6 +239,13 @@ Botón "Generar documento" visible únicamente en trámites de Prácticas Prepro
 - Modal de detalle con 4 secciones: información general, contacto, fechas, datos institucionales
 - Soporte de múltiples correos (separador `;`) y duración con dos párrafos (separador `//`)
 
+### Módulo de Permisos RBAC (Sprint 8) — solo Coordinador con `settings.administrar`
+
+- Página `/configuracion` con tabla de roles × funcionalidades
+- Permite habilitar o deshabilitar permisos por rol mediante checkboxes
+- Los cambios tienen efecto inmediato en el backend (TTL=0)
+- Usa `permisosApi.ts` y `PermisoRoute.tsx`
+
 ### Módulo de Reportes (Sprint 8) — solo Coordinador
 
 **Tab 1 — Dashboard ejecutivo:**
@@ -291,3 +302,4 @@ Botón "Generar documento" visible únicamente en trámites de Prácticas Prepro
 | Sprint 6.5 | Ajustes: campos condicionales, hitos SIN/CON_CONVENIO, modal fix | ✅ Completado |
 | Sprint 7   | Convenios (consulta, filtros locales, modal detalle)             | ✅ Completado |
 | Sprint 8   | Reportes (dashboard, gráficos recharts, planificación, Excel)    | ✅ Completado |
+| Sprint 8   | Configuración RBAC (matriz de permisos editable, `/configuracion`) | ✅ Completado |

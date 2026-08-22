@@ -126,7 +126,6 @@ export default function ListaEstudiantes() {
                 <th className="px-4 py-3 text-left">Cédula</th>
                 <th className="px-4 py-3 text-left">Correo</th>
                 <th className="px-4 py-3 text-left">Carrera</th>
-                <th className="px-4 py-3 text-left">Matrícula</th>
                 <th className="px-4 py-3 text-center">Estado</th>
                 <th className="px-4 py-3 text-center">Acciones</th>
               </tr>
@@ -143,7 +142,6 @@ export default function ListaEstudiantes() {
                   <td className="px-4 py-3">{est.cedula}</td>
                   <td className="px-4 py-3">{est.correo}</td>
                   <td className="px-4 py-3">{est.carrera}</td>
-                  <td className="px-4 py-3">{est.matricula}</td>
                   <td className="px-4 py-3 text-center">
                     <span
                       className={`inline-block px-2 py-1 rounded text-xs font-medium ${

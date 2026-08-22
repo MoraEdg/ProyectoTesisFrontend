@@ -6,7 +6,6 @@ export interface Estudiante {
   correo: string;
   telefono: string | null;
   carrera: string;
-  matricula: string;
   nombre_usuario: string;
   estado: boolean;
 }

@@ -10,12 +10,11 @@ interface CampoForm {
   correo: string;
   telefono: string;
   carrera: string;
-  matricula: string;
 }
 
 const INICIAL: CampoForm = {
   nombres: '', apellidos: '', cedula: '',
-  correo: '', telefono: '', carrera: '', matricula: '',
+  correo: '', telefono: '', carrera: '',
 };
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -42,7 +41,6 @@ function validar(form: CampoForm, esEdicion: boolean): Record<string, string> {
   }
 
   if (!form.carrera.trim())   err.carrera   = 'El campo Carrera es obligatorio';
-  if (!form.matricula.trim()) err.matricula = 'El campo Matrícula es obligatorio';
 
   return err;
 }
@@ -70,7 +68,6 @@ export default function FormEstudiante() {
           correo:    est.correo,
           telefono:  est.telefono ?? '',
           carrera:   est.carrera,
-          matricula: est.matricula,
         });
       })
       .catch(() => navigate('/estudiantes'))
@@ -97,9 +94,9 @@ export default function FormEstudiante() {
     setCargando(true);
     try {
       if (esEdicion && id) {
-        const { nombres, apellidos, correo, telefono, carrera, matricula } = form;
+        const { nombres, apellidos, correo, telefono, carrera } = form;
         await editarEstudiante(id, {
-          nombres, apellidos, correo, carrera, matricula,
+          nombres, apellidos, correo, carrera,
           ...(telefono ? { telefono } : {}),
         });
         navigate(`/estudiantes/${id}`);
@@ -110,7 +107,6 @@ export default function FormEstudiante() {
           cedula: form.cedula,
           correo: form.correo,
           carrera: form.carrera,
-          matricula: form.matricula,
           ...(form.telefono ? { telefono: form.telefono } : {}),
         });
         navigate(`/estudiantes/${nuevo.id_estudiante}`);
@@ -222,17 +218,6 @@ export default function FormEstudiante() {
               {errores.carrera && <p className="text-red-500 text-xs mt-1">{errores.carrera}</p>}
             </div>
 
-            {/* Matrícula */}
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Matrícula *</label>
-              <input
-                type="text"
-                value={form.matricula}
-                onChange={(e) => handleChange('matricula', e.target.value)}
-                className={`w-full h-12 px-4 text-sm border rounded outline-none focus:border-uisek focus:shadow-[0_0_0_2px_rgba(8,83,148,0.2)] ${errores.matricula ? 'border-red-400' : 'border-[#d8d8d8]'}`}
-              />
-              {errores.matricula && <p className="text-red-500 text-xs mt-1">{errores.matricula}</p>}
-            </div>
           </div>
 
           {/* Botones */}

@@ -2,26 +2,30 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 interface MenuItem {
-  to: string;
+  to:    string;
   label: string;
-  icon: string;
+  icon:  string;
 }
 
 const menuCoordinador: MenuItem[] = [
-  { to: '/dashboard',    label: 'Inicio',       icon: 'fa-solid fa-house' },
-  { to: '/estudiantes',  label: 'Estudiantes',  icon: 'fa-solid fa-user-graduate' },
-  { to: '/tramites',     label: 'Trámites',     icon: 'fa-solid fa-folder-open' },
-  { to: '/convenios',    label: 'Convenios',    icon: 'fa-solid fa-handshake' },
-  { to: '/reportes',     label: 'Reportes',     icon: 'fa-solid fa-chart-bar' },
+  { to: '/dashboard',   label: 'Inicio',      icon: 'fa-solid fa-house' },
+  { to: '/estudiantes', label: 'Estudiantes', icon: 'fa-solid fa-user-graduate' },
+  { to: '/tramites',    label: 'Trámites',    icon: 'fa-solid fa-folder-open' },
+  { to: '/convenios',   label: 'Convenios',   icon: 'fa-solid fa-handshake' },
+  { to: '/reportes',    label: 'Reportes',    icon: 'fa-solid fa-chart-bar' },
 ];
 
 const menuEstudiante: MenuItem[] = [
-  { to: '/dashboard',      label: 'Inicio',       icon: 'fa-solid fa-house' },
-  { to: '/mis-tramites',   label: 'Mis Trámites', icon: 'fa-solid fa-folder-open' },
-  { to: '/convenios',      label: 'Convenios',    icon: 'fa-solid fa-handshake' },
+  { to: '/dashboard',    label: 'Inicio',       icon: 'fa-solid fa-house' },
+  { to: '/mis-tramites', label: 'Mis Trámites', icon: 'fa-solid fa-folder-open' },
+  { to: '/convenios',    label: 'Convenios',    icon: 'fa-solid fa-handshake' },
 ];
 
-function getMenu(rol: string | undefined): MenuItem[] {
+const itemConfiguracion: MenuItem = {
+  to: '/configuracion', label: 'Configuración', icon: 'fa-solid fa-sliders',
+};
+
+function getMenuBase(rol: string | undefined): MenuItem[] {
   switch (rol) {
     case 'Coordinador': return menuCoordinador;
     case 'Estudiante':  return menuEstudiante;
@@ -30,7 +34,7 @@ function getMenu(rol: string | undefined): MenuItem[] {
 }
 
 export default function Layout() {
-  const { usuario, logout } = useAuth();
+  const { usuario, logout, tienePermiso } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -38,7 +42,11 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const menuItems = getMenu(usuario?.rol);
+  // El item de Configuración solo aparece si el rol tiene el permiso dinámico.
+  const menuItems: MenuItem[] = [
+    ...getMenuBase(usuario?.rol),
+    ...(tienePermiso('settings.administrar') ? [itemConfiguracion] : []),
+  ];
 
   return (
     <div className="min-h-screen bg-uisek-light">
@@ -74,7 +82,8 @@ export default function Layout() {
       </header>
 
       {/* Sidebar */}
-      <aside className="fixed left-[30px] top-[90px] w-[260px] bg-white rounded-xl shadow-[0_3px_5px_rgba(0,0,0,0.02),0_0_2px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.08)] overflow-y-auto"
+      <aside
+        className="fixed left-[30px] top-[90px] w-[260px] bg-white rounded-xl shadow-[0_3px_5px_rgba(0,0,0,0.02),0_0_2px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.08)] overflow-y-auto"
         style={{ height: 'calc(100vh - 110px)' }}
       >
         <nav className="flex flex-col h-full">

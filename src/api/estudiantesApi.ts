@@ -24,7 +24,6 @@ export interface DatosCrear {
   correo: string;
   telefono?: string;
   carrera: string;
-  matricula: string;
 }
 
 export interface DatosEditar {
@@ -33,7 +32,6 @@ export interface DatosEditar {
   correo?: string;
   telefono?: string;
   carrera?: string;
-  matricula?: string;
 }
 
 export async function listarEstudiantes() {

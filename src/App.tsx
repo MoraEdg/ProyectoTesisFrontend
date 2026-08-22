@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import PermisoRoute from './components/PermisoRoute';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -14,6 +15,7 @@ import FormTramite from './pages/tramites/FormTramite';
 import DetalleTramite from './pages/tramites/DetalleTramite';
 import ListaConvenios from './pages/convenios/ListaConvenios';
 import Reportes from './pages/reportes/Reportes';
+import Configuracion from './pages/configuracion/Configuracion';
 
 function SinPermisos() {
   return (
@@ -30,7 +32,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           {/* Públicas */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login"        element={<Login />} />
           <Route path="/sin-permisos" element={<SinPermisos />} />
 
           {/* Rutas autenticadas con Layout unificado */}
@@ -85,11 +87,16 @@ export default function App() {
             <Route path="/mis-tramites/:id" element={
               <PrivateRoute roles={['Estudiante']}><DetalleTramite /></PrivateRoute>
             } />
+
+            {/* Configuración — guarda por permiso dinámico (RBAC) */}
+            <Route path="/configuracion" element={
+              <PermisoRoute clave="settings.administrar"><Configuracion /></PermisoRoute>
+            } />
           </Route>
 
           {/* Redirecciones */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/"  element={<Navigate to="/login" replace />} />
+          <Route path="*"  element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

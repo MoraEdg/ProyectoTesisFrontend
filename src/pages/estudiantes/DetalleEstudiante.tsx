@@ -72,7 +72,6 @@ export default function DetalleEstudiante() {
     { label: 'Correo',           valor: estudiante.correo },
     { label: 'Teléfono',         valor: estudiante.telefono || '—' },
     { label: 'Carrera',          valor: estudiante.carrera },
-    { label: 'Matrícula',        valor: estudiante.matricula },
     { label: 'Nombre de usuario', valor: estudiante.nombre_usuario },
   ];
 

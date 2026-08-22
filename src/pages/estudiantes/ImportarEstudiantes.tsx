@@ -69,7 +69,7 @@ export default function ImportarEstudiantes() {
         </p>
         <ul className="list-disc ml-6 space-y-1">
           <li>La hoja debe llamarse <strong>Estudiantes</strong></li>
-          <li>Columnas requeridas: <strong>Cedula, Apellidos, Nombres, Correo, Matricula, Carrera</strong></li>
+          <li>Columnas requeridas: <strong>Cedula, Apellidos, Nombres, Correo, Carrera</strong></li>
           <li>Columna opcional: <strong>Telefono</strong></li>
           <li>Archivos permitidos: .xlsx, .xls, .xlsm</li>
         </ul>

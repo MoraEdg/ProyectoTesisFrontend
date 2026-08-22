@@ -20,7 +20,6 @@ export interface Tramite {
   cedula: string;
   correo?: string;
   carrera: string;
-  matricula: string;
 }
 
 export interface HistorialEntry {

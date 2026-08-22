@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { listarConvenios } from '../../api/conveniosApi';
+import { listarConvenios, listarTiposConvenio } from '../../api/conveniosApi';
+import type { TipoConvenio } from '../../api/conveniosApi';
 import type { Convenio } from '../../types/convenio';
 import { COLORES_ESTADO_CONVENIO } from '../../components/badgeEstado';
 import ModalDetalleConvenio from '../../components/ModalDetalleConvenio';
+import { useAuth } from '../../context/AuthContext';
 
 const POR_PAGINA = 10;
 
@@ -15,14 +17,23 @@ function fmtFecha(iso: string | null): string {
 }
 
 export default function ListaConvenios() {
+  const { tienePermiso } = useAuth();
+
   const [todos, setTodos]       = useState<Convenio[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError]       = useState('');
 
-  // Filtros locales (cliente)
+  // Filtros locales (cliente) — busqueda, estado, anio
   const [busqueda, setBusqueda] = useState('');
   const [estado, setEstado]     = useState('');
   const [anio, setAnio]         = useState('');
+
+  // Filtro por tipo de convenio (D-CONV-FILTRO) — enviado al backend con FK
+  const [tipoConvenioId, setTipoConvenioId] = useState<number | ''>('');
+  const [tiposConvenio, setTiposConvenio]   = useState<TipoConvenio[]>([]);
+
+  // El filtro de tipo solo se muestra si el rol tiene el permiso del catálogo
+  const puedeFiltrarTipo = tienePermiso('catalogos.ver_tipos_convenio');
 
   // Paginación
   const [pagina, setPagina] = useState(1);
@@ -30,14 +41,37 @@ export default function ListaConvenios() {
   // Modal
   const [convenioVer, setConvenioVer] = useState<Convenio | null>(null);
 
+  // Carga (o recarga) de convenios desde el backend.
+  // tipo_convenio_id se envía como parámetro de query (D-CONV-FILTRO).
+  // Los demás filtros se aplican localmente (D-CONV-05).
   useEffect(() => {
-    listarConvenios()
-      .then(setTodos)
-      .catch(() => setError('No se pudo conectar con el servidor. Intente nuevamente.'))
-      .finally(() => setCargando(false));
-  }, []);
+    let cancelado = false;
+    setCargando(true);
+    setError('');
+    setTodos([]);
 
-  // Catálogos derivados de los datos cargados
+    listarConvenios({
+      tipo_convenio_id: tipoConvenioId !== '' ? tipoConvenioId : undefined,
+    })
+      .then((data) => { if (!cancelado) setTodos(data); })
+      .catch(() => {
+        if (!cancelado) setError('No se pudo conectar con el servidor. Intente nuevamente.');
+      })
+      .finally(() => { if (!cancelado) setCargando(false); });
+
+    return () => { cancelado = true; };
+  }, [tipoConvenioId]);
+
+  // Carga el catálogo de tipos de convenio solo si el rol tiene el permiso.
+  // Si falla o no tiene permiso, el selector de tipo simplemente no se muestra.
+  useEffect(() => {
+    if (!puedeFiltrarTipo) return;
+    listarTiposConvenio()
+      .then(setTiposConvenio)
+      .catch(() => { /* silencioso: el selector no aparece */ });
+  }, [puedeFiltrarTipo]);
+
+  // Catálogos derivados de los datos cargados (para los filtros locales)
   const estadosDisponibles = useMemo(
     () => [...new Set(todos.map((c) => c.estado))].sort(),
     [todos]
@@ -47,7 +81,7 @@ export default function ListaConvenios() {
     [todos]
   );
 
-  // Filtrado local
+  // Filtrado local (busqueda, estado, anio) sobre el conjunto cargado
   const filtrados = useMemo(() => {
     const bq = busqueda.toLowerCase().trim();
     return todos.filter((c) => {
@@ -61,18 +95,27 @@ export default function ListaConvenios() {
   const totalPaginas  = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA));
   const paginaActual  = Math.min(pagina, totalPaginas);
   const items         = filtrados.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA);
-  const hayFiltros    = !!(busqueda || estado || anio);
+  const hayFiltros    = !!(busqueda || estado || anio || tipoConvenioId !== '');
 
   const limpiarFiltros = () => {
     setBusqueda('');
     setEstado('');
     setAnio('');
+    setTipoConvenioId('');
     setPagina(1);
   };
 
-  // Restablecer página al cambiar filtros
+  // Restablecer página al cambiar filtros locales
   const cambiarFiltro = (setter: (v: string) => void) => (v: string) => {
     setter(v);
+    setPagina(1);
+  };
+
+  const cambiarTipo = (id: number | '') => {
+    setTipoConvenioId(id);
+    setBusqueda('');
+    setEstado('');
+    setAnio('');
     setPagina(1);
   };
 
@@ -117,6 +160,20 @@ export default function ListaConvenios() {
               />
             </div>
           </div>
+
+          {/* Tipo de convenio — solo si el rol tiene catalogos.ver_tipos_convenio (D-CONV-FILTRO) */}
+          {puedeFiltrarTipo && tiposConvenio.length > 0 && (
+            <select
+              value={tipoConvenioId}
+              onChange={(e) => cambiarTipo(e.target.value === '' ? '' : Number(e.target.value))}
+              className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-uisek"
+            >
+              <option value="">Todos los tipos</option>
+              {tiposConvenio.map((t) => (
+                <option key={t.id} value={t.id}>{t.nombre}</option>
+              ))}
+            </select>
+          )}
 
           {/* Estado */}
           <select
