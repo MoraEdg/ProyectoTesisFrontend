@@ -12,6 +12,24 @@ import type {
 
 // ─── Helpers puros (fuera del componente) ─────────────────────────────────────
 
+/** Abreviaciones técnicas que requieren expansión para presentación */
+const ABREV: Record<string, string> = {
+  doc:  'de documento',
+  docs: 'documentos',
+};
+
+/** Convierte una clave de acción técnica en etiqueta legible para el usuario.
+ *  Ejemplo: 'ver_tipos_doc_generado' → 'Ver tipos de documento generado'
+ *  Solo afecta la presentación — las claves almacenadas no se modifican. */
+function formatearAccion(accion: string): string {
+  const etiqueta = accion
+    .split('_')
+    .map(p => ABREV[p] ?? p)
+    .join(' ');
+  return etiqueta.charAt(0).toUpperCase() + etiqueta.slice(1);
+}
+
+
 /** Construye un mapa plano de permisos desde el array de la API.
  *  Clave: `"${rol_id}:${funcionalidad_id}"` → habilitado.
  *  Los pares NO presentes en el array se consideran false. */
@@ -276,7 +294,7 @@ export default function Configuracion() {
                           title={func.descripcion}
                           className="cursor-default"
                         >
-                          {func.accion}
+                          {formatearAccion(func.accion)}
                         </span>
                       </td>
 
@@ -300,7 +318,7 @@ export default function Configuracion() {
                               disabled={guardando}
                               className="h-4 w-4 rounded border-gray-300 cursor-pointer disabled:cursor-not-allowed"
                               style={{ accentColor: '#085394' }}
-                              aria-label={`${rol.nombre_rol} — ${func.accion}`}
+                              aria-label={`${rol.nombre_rol} — ${formatearAccion(func.accion)}`}
                             />
                           </td>
                         );
