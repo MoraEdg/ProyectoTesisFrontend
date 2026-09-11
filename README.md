@@ -1,7 +1,8 @@
 # Frontend — Sistema de Gestión de Prácticas Preprofesionales UISEK
 
 **Autor:** Edgar Mora  
-**Proyecto de Tesis — Universidad SEK**
+**Proyecto de Tesis — Universidad SEK**  
+**Versión:** 1.0.0 — Baseline final validada
 
 | Recurso              | Enlace                                                |
 | -------------------- | ----------------------------------------------------- |
@@ -303,3 +304,8 @@ Botón "Generar documento" visible únicamente en trámites de Prácticas Prepro
 | Sprint 7   | Convenios (consulta, filtros locales, modal detalle)             | ✅ Completado |
 | Sprint 8   | Reportes (dashboard, gráficos recharts, planificación, Excel)    | ✅ Completado |
 | Sprint 8   | Configuración RBAC (matriz de permisos editable, `/configuracion`) | ✅ Completado |
+
+**El desarrollo planificado de esta versión está finalizado (v1.0.0).** Funcionalidades
+adicionales (notificaciones, interfaz para Director/Decano, sincronización en tiempo
+real, etc.) se consideran mejoras o escalamiento futuro, con su propia planificación
+y trazabilidad — no son alcance pendiente de esta versión.
